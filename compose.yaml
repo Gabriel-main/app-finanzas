@@ -1,0 +1,44 @@
+services:
+    # Servidor de Aplicación (PHP-FPM + pnpm/Vite)
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+            args:
+                user: ${USER:-developer} # Pasamos el usuario dinámico de tu Ubuntu
+                uid: ${DOCKER_UID:-1000} # ID de usuario para evitar bloqueos de permisos
+        image: laravel-app
+        container_name: laravel-app-web
+        init: true # Evita contenedores zombies
+        restart: unless-stopped
+        working_dir: /var/www
+        ports:
+            - "5173:5173" # Puerto para Vite (Tailwind/Asset compilation)
+        environment:
+            - VITE_PORT=5173
+        volumes:
+            - ./:/var/www
+            - sqlite-data:/var/www/database # <-- Mapea la carpeta database a un volumen seguro
+        networks:
+            - laravel-network
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
+
+    # Servidor Web (Nginx)
+    nginx:
+        image: nginx:alpine
+        container_name: app-nginx
+        restart: unless-stopped
+        ports:
+            - "8000:80" # Entrarás a tu app desde http://localhost:8000
+        volumes:
+            - ./:/var/www
+            - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+        networks:
+            - laravel-network
+        depends_on:
+            - app
+
+networks:
+    laravel-network:
+        driver: bridge
