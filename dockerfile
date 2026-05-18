@@ -23,7 +23,7 @@ RUN curl -sL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs
 
 # Habilitar Corepack e instalar pnpm de forma segura
-RUN corepack enable && corepack prepare pnpm@latest --activate
+RUN corepack enable && corepack prepare pnpm@9 --activate
 
 # Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
