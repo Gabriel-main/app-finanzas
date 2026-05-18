@@ -42,3 +42,7 @@ services:
 networks:
     laravel-network:
         driver: bridge
+
+volumes:
+    sqlite-data:
+        driver: local
