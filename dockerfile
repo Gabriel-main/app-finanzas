@@ -18,12 +18,12 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install pdo_mysql pdo_sqlite mbstring exif pcntl bcmath gd zip \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Instalar Node.js (Versión 20)
+# Instalar Node.js (Versión 20 obligatoria)
 RUN curl -sL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs
 
-# Habilitar Corepack e instalar pnpm de forma segura
-RUN corepack enable && corepack prepare pnpm@9 --activate
+# Habilitar Corepack e instalar pnpm v9 (Totalmente compatible con Node 20)
+RUN corepack enable && corepack prepare pnpm@9.15.4 --activate
 
 # Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
