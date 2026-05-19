@@ -22,15 +22,12 @@ RUN apt-get update && apt-get install -y \
 RUN curl -sL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs
 
-# Habilitar Corepack e instalar pnpm v9 (Totalmente compatible con Node 20)
-RUN corepack enable && corepack prepare pnpm@9.15.4 --activate
-
 # Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Crear el usuario del sistema
+# Crear el usuario del sistema y sus carpetas de configuración para Composer y NPM
 RUN useradd -G www-data,root -u $uid -d /home/$user $user \
-    && mkdir -p /home/$user/.composer \
+    && mkdir -p /home/$user/.composer /home/$user/.npm /home/$user/.config \
     && chown -R $user:$user /home/$user
 
 # Configurar directorio de trabajo principal
@@ -39,10 +36,10 @@ WORKDIR /var/www
 # Copiar archivos del proyecto
 COPY . /var/www
 
-# Ajuste de permisos para Laravel y SQLite
+# Ajuste de permisos para Laravel (Aseguramos que storage y bootstrap/cache tengan acceso total)
 RUN chown -R $user:www-data /var/www \
-    && find /var/www -type d -exec chmod 775 {} \; \
-    && find /var/www -type f -exec chmod 664 {} \;
+    && chmod -R 775 /var/www/storage \
+    && chmod -R 775 /var/www/bootstrap/cache
 
 # Cambiar al usuario seguro
 USER $user
