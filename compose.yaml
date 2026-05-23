@@ -4,9 +4,6 @@ services:
         build:
             context: .
             dockerfile: dockerfile
-            args:
-                user: ${USER:-developer} # Pasamos el usuario dinámico de tu Ubuntu
-                uid: ${DOCKER_UID:-1000} # ID de usuario para evitar bloqueos de permisos
         image: laravel-app
         container_name: laravel-app-finanzas
         init: true # Evita contenedores zombies
