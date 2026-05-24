@@ -24,7 +24,7 @@ services:
     # Servidor Web (Nginx)
     nginx:
         image: nginx:alpine
-        container_name: app-nginx
+        container_name: servidor-nginx
         restart: unless-stopped
         ports:
             - "8000:80" # Entrarás a tu app desde http://localhost:8000
