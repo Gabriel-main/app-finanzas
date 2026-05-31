@@ -13,9 +13,19 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        <script>
+            if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            }
+        </script>
     </head>
     <body class="font-sans text-gray-900 antialiased">
-        <div class="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-gray-950 dark:via-gray-900 dark:to-indigo-950 flex flex-col justify-center items-center px-4 py-8">
+        <div class="relative min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-gray-950 dark:via-gray-900 dark:to-indigo-950 flex flex-col justify-center items-center px-4 py-8">
+            <div class="absolute top-4 right-4">
+                <x-theme-toggle />
+            </div>
+
             <div class="w-full sm:max-w-md">
                 <div class="flex justify-center mb-8">
                     <a href="/" wire:navigate class="group">
