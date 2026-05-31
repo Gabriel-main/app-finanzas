@@ -15,15 +15,17 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans text-gray-900 antialiased">
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100 dark:bg-gray-900">
-            <div>
-                <a href="/" wire:navigate>
-                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-                </a>
-            </div>
+        <div class="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-gray-950 dark:via-gray-900 dark:to-indigo-950 flex flex-col justify-center items-center px-4 py-8">
+            <div class="w-full sm:max-w-md">
+                <div class="flex justify-center mb-8">
+                    <a href="/" wire:navigate class="group">
+                        <x-application-logo class="w-14 h-14 text-indigo-600 dark:text-indigo-400 transition-transform duration-300 group-hover:scale-105" />
+                    </a>
+                </div>
 
-            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white dark:bg-gray-800 shadow-md overflow-hidden sm:rounded-lg">
-                {{ $slot }}
+                <div class="bg-white dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-xl shadow-indigo-500/10 dark:shadow-black/30 border border-gray-100 dark:border-gray-700/50 p-8 sm:p-10">
+                    {{ $slot }}
+                </div>
             </div>
         </div>
     </body>
