@@ -25,7 +25,7 @@
             <x-sidebar />
 
             <div data-sidebar-content class="transition-all duration-200">
-                <div class="sticky top-0 z-10 flex items-center justify-between bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 h-14">
+                <div class="sticky top-0 z-40 flex items-center justify-between bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 h-14">
                     <button
                         type="button"
                         onclick="window.toggleSidebar()"
