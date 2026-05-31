@@ -15,7 +15,7 @@ services:
             - VITE_PORT=5173
         volumes:
             - ./:/var/www
-            - sqlite-data:/var/www/database # <-- Mapea la carpeta database a un volumen seguro
+            - sqlite-data:/var/www/database/database.sqlite # <-- Mapea la carpeta database a un volumen seguro
         networks:
             - laravel-network
         extra_hosts:
