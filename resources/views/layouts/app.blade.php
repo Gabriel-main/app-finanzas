@@ -28,7 +28,7 @@
                 <div class="sticky top-0 z-10 flex items-center justify-between bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 h-14">
                     <button
                         type="button"
-                        onclick="window.sidebar.toggle()"
+                        onclick="window.toggleSidebar()"
                         class="inline-flex items-center justify-center w-9 h-9 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors duration-150"
                     >
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -53,7 +53,7 @@
 
             <div
                 data-sidebar-overlay
-                onclick="window.sidebar.close()"
+                onclick="window.closeSidebar()"
                 class="fixed inset-0 z-20 bg-gray-900/50 lg:hidden hidden"
             ></div>
         </div>

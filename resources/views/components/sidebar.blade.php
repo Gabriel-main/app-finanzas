@@ -29,7 +29,7 @@
             <x-application-logo class="h-8 w-8 text-indigo-600 dark:text-indigo-400" />
             <span class="font-bold text-lg text-gray-800 dark:text-white">{{ config('app.name') }}</span>
         </a>
-        <button type="button" onclick="window.sidebar.close()" class="lg:hidden inline-flex items-center justify-center w-8 h-8 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors duration-150">
+        <button type="button" onclick="window.closeSidebar()" class="lg:hidden inline-flex items-center justify-center w-8 h-8 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors duration-150">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -64,7 +64,7 @@
                                 <a
                                     href="{{ route($sub['route']) }}"
                                     wire:navigate
-                                    onclick="window.sidebar.close()"
+                                    onclick="window.closeSidebar()"
                                     class="flex items-center gap-3 px-3 py-2 ms-6 rounded-lg text-sm font-medium transition-colors duration-150 {{ $isSubActive ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-gray-200' }}"
                                 >
                                     {!! $icons[$sub['icon'] ?? ''] ?? '' !!}
@@ -81,7 +81,7 @@
                 <a
                     href="{{ route($item['route']) }}"
                     wire:navigate
-                    onclick="window.sidebar.close()"
+                    onclick="window.closeSidebar()"
                     class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors duration-150 {{ $isActive ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-gray-200' }}"
                 >
                     {!! $icons[$item['icon']] ?? '' !!}
