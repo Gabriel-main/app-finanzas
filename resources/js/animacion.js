@@ -4,12 +4,11 @@ window.toggleTheme = function () {
 }
 
 function applyTheme() {
+    var isDark = !document.documentElement.classList.contains('dark')
+    document.documentElement.classList.toggle('dark', isDark)
+    localStorage.setItem('theme', isDark ? 'dark' : 'light')
+
     document.documentElement.classList.add('theme-transition')
-    setTimeout(function () {
-        var isDark = !document.documentElement.classList.contains('dark')
-        document.documentElement.classList.toggle('dark', isDark)
-        localStorage.setItem('theme', isDark ? 'dark' : 'light')
-    }, 350)
     setTimeout(function () {
         document.documentElement.classList.remove('theme-transition')
     }, 700)

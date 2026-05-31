@@ -17,5 +17,11 @@
                 "active": ["profile"]
             }
         ]
+    },
+    {
+        "title": "Mis Gastos",
+        "route": "gastos",
+        "icon": "expenses",
+        "active": ["gastos"]
     }
 ]

@@ -2,13 +2,17 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'welcome');
+Route::view('/', 'web.welcome');
 
-Route::view('dashboard', 'dashboard')
+Route::view('dashboard', 'web.dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
-Route::view('profile', 'profile')
+Route::view('gastos', 'web.gastos')
+    ->middleware(['auth', 'verified'])
+    ->name('gastos');
+
+Route::view('profile', 'web.profile')
     ->middleware(['auth'])
     ->name('profile');
 
