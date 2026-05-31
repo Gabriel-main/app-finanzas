@@ -21,14 +21,19 @@
 @endphp
 
 <aside
-    class="fixed inset-y-0 left-0 z-30 flex flex-col w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 transition-transform duration-200 ease-in-out -translate-x-full lg:translate-x-0"
-    :class="{ 'translate-x-0': sidebarOpen }"
+    data-sidebar
+    class="fixed inset-y-0 left-0 z-30 flex flex-col w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 transition-transform duration-200 ease-in-out -translate-x-full"
 >
-    <div class="flex items-center h-16 px-6 border-b border-gray-200 dark:border-gray-700">
+    <div class="flex items-center justify-between h-16 px-6 border-b border-gray-200 dark:border-gray-700">
         <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center gap-2.5">
             <x-application-logo class="h-8 w-8 text-indigo-600 dark:text-indigo-400" />
             <span class="font-bold text-lg text-gray-800 dark:text-white">{{ config('app.name') }}</span>
         </a>
+        <button type="button" onclick="window.sidebar.close()" class="lg:hidden inline-flex items-center justify-center w-8 h-8 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors duration-150">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
     </div>
 
     <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-0.5">
@@ -59,7 +64,7 @@
                                 <a
                                     href="{{ route($sub['route']) }}"
                                     wire:navigate
-                                    @click="sidebarOpen = false"
+                                    onclick="window.sidebar.close()"
                                     class="flex items-center gap-3 px-3 py-2 ms-6 rounded-lg text-sm font-medium transition-colors duration-150 {{ $isSubActive ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-gray-200' }}"
                                 >
                                     {!! $icons[$sub['icon'] ?? ''] ?? '' !!}
@@ -76,7 +81,7 @@
                 <a
                     href="{{ route($item['route']) }}"
                     wire:navigate
-                    @click="sidebarOpen = false"
+                    onclick="window.sidebar.close()"
                     class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors duration-150 {{ $isActive ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-gray-200' }}"
                 >
                     {!! $icons[$item['icon']] ?? '' !!}
@@ -98,7 +103,6 @@
             </div>
         </div>
         <div class="flex items-center justify-between px-3">
-            <x-theme-toggle />
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit" class="inline-flex items-center text-sm text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors duration-150">
