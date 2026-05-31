@@ -1,0 +1,21 @@
+[
+    {
+        "title": "Dashboard",
+        "route": "dashboard",
+        "icon": "dashboard",
+        "active": ["dashboard"]
+    },
+    {
+        "title": "Settings",
+        "icon": "cog",
+        "active": ["profile"],
+        "submenu": [
+            {
+                "title": "Profile",
+                "route": "profile",
+                "icon": "user",
+                "active": ["profile"]
+            }
+        ]
+    }
+]
