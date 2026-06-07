@@ -43,12 +43,20 @@ new class extends Component
 
     public function createCategory(): void
     {
+        $type = $this->tab === 'saving' ? 'income' : 'expense';
+
         $validated = $this->validate([
-            'newCategoryName' => ['required', 'string', 'max:255'],
+            'newCategoryName' => ['required', 'string', 'max:255', function ($attribute, $value, $fail) use ($type) {
+                $exists = \App\Models\Categories::where('user_id', auth()->id())
+                    ->where('name', $value)
+                    ->where('type', $type)
+                    ->exists();
+                if ($exists) {
+                    $fail('Ya existe una categoría con ese nombre para este tipo.');
+                }
+            }],
             'newCategoryColor' => ['nullable', 'string', 'max:7'],
         ]);
-
-        $type = $this->tab === 'saving' ? 'income' : 'expense';
 
         $newCategory = app(CategoryService::class)->createCategory(
             auth()->id(),

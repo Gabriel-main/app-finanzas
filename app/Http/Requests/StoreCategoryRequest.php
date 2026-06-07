@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Categories;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreCategoryRequest extends FormRequest
@@ -13,24 +14,32 @@ class StoreCategoryRequest extends FormRequest
 
     public function rules(): array
     {
-        $categoryId = $this->route('category');
-
         return [
-            'name' => [
-                'required',
-                'string',
-                'max:255',
-            ],
-            'type' => [
-                'required',
-                'in:income,expense',
-            ],
-            'color' => [
-                'nullable',
-                'string',
-                'max:7',
-            ],
+            'name' => ['required', 'string', 'max:255'],
+            'type' => ['required', 'in:income,expense'],
+            'color' => ['nullable', 'string', 'max:7'],
         ];
+    }
+
+    public function withValidator($validator): void
+    {
+        $validator->after(function ($validator) {
+            if ($validator->errors()->any()) {
+                return;
+            }
+
+            $exists = Categories::where('user_id', auth()->id())
+                ->where('name', $this->name)
+                ->where('type', $this->type)
+                ->exists();
+
+            if ($exists) {
+                $validator->errors()->add(
+                    'name',
+                    'Ya existe una categoría con ese nombre para este tipo.'
+                );
+            }
+        });
     }
 
     public function messages(): array
