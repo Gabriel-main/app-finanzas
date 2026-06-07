@@ -11,15 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('accounts', function (Blueprint $table) {
+        Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('currency_id', 3);
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade'); // Null para globales
             $table->string('name');
-            $table->decimal('balance', 12, 2)->default(0.00);
+            $table->enum('type', ['income', 'expense']);
+            $table->string('icon')->nullable();
+            $table->string('color')->nullable();
             $table->timestamps();
-
-            $table->foreign('currency_id')->references('id')->on('currencies');
         });
     }
 
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('accounts');
+        Schema::dropIfExists('categories');
     }
 };

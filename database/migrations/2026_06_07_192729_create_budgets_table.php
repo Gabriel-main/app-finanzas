@@ -11,15 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('accounts', function (Blueprint $table) {
+        Schema::create('budgets', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('currency_id', 3);
-            $table->string('name');
-            $table->decimal('balance', 12, 2)->default(0.00);
+            $table->foreignId('category_id')->constrained()->onDelete('cascade');
+            $table->decimal('amount_limit', 12, 2);
+            $table->date('start_date');
+            $table->date('end_date');
             $table->timestamps();
 
-            $table->foreign('currency_id')->references('id')->on('currencies');
+            $table->index(['user_id', 'start_date', 'end_date']);
         });
     }
 
@@ -28,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('accounts');
+        Schema::dropIfExists('budgets');
     }
 };
