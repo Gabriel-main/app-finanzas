@@ -26,6 +26,16 @@ class CategoryRepository implements CategoryRepositoryInterface
         return $this->model->create($data);
     }
 
+    public function update(int $id, array $data): ?Categories
+    {
+        $category = $this->findById($id);
+        if (! $category) {
+            return null;
+        }
+        $category->update($data);
+        return $category;
+    }
+
     public function findById(int $id): ?Categories
     {
         return $this->model->find($id);

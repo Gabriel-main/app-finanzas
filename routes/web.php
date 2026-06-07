@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\TransactionController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'web.welcome');
@@ -20,5 +22,13 @@ Route::post('logout', function () {
     app(\App\Livewire\Actions\Logout::class)();
     return redirect('/');
 })->name('logout');
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::apiResource('categories', CategoryController::class)
+        ->only(['index', 'store', 'update', 'destroy']);
+
+    Route::apiResource('transactions', TransactionController::class)
+        ->only(['index', 'store', 'show', 'update', 'destroy']);
+});
 
 require __DIR__.'/auth.php';

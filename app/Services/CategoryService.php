@@ -24,6 +24,17 @@ class CategoryService
         return $this->repository->create($data);
     }
 
+    public function updateCategory(int $userId, int $categoryId, array $data): ?Categories
+    {
+        $category = $this->repository->findById($categoryId);
+
+        if (! $category || $category->user_id !== $userId) {
+            return null;
+        }
+
+        return $this->repository->update($categoryId, $data);
+    }
+
     public function deleteCategory(int $userId, int $categoryId): bool
     {
         $category = $this->repository->findById($categoryId);
