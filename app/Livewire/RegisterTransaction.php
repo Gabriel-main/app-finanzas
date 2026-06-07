@@ -63,7 +63,7 @@ class RegisterTransaction extends Component
 
     public function createCategory(): void
     {
-        $type = $this->tab === 'saving' ? 'income' : 'expense';
+        $type = $this->tab === 'income' ? 'income' : 'expense';
 
         $validated = $this->validate([
             'newCategoryName' => ['required', 'string', 'max:255', function ($attribute, $value, $fail) use ($type) {
@@ -106,7 +106,7 @@ class RegisterTransaction extends Component
             'date' => ['required', 'date'],
         ]);
 
-        $type = $this->tab === 'saving' ? 'income' : 'expense';
+        $type = $this->tab === 'income' ? 'income' : 'expense';
 
         $account = auth()->user()->accounts()->first();
 
@@ -138,7 +138,7 @@ class RegisterTransaction extends Component
 
     private function loadCategories(): void
     {
-        $type = $this->tab === 'saving' ? 'income' : 'expense';
+        $type = $this->tab === 'income' ? 'income' : 'expense';
         $this->categories = app(CategoryService::class)->getUserCategories(auth()->id(), $type);
     }
 
