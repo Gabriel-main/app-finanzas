@@ -87,4 +87,13 @@ new #[Layout('layouts.guest')] class extends Component
             {{ __('Sign in') }}
         </x-primary-button>
     </form>
+
+    <div class="mt-6 text-center">
+        <p class="text-sm text-gray-500 dark:text-gray-400">
+            {{ __('Don\'t have an account?') }}
+            <a href="{{ route('register') }}" wire:navigate class="font-medium transition-colors duration-150" style="color: var(--color-primary)">
+                {{ __('Register') }}
+            </a>
+        </p>
+    </div>
 </div>

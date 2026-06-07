@@ -22,6 +22,14 @@
     </head>
     <body class="font-sans text-gray-900 antialiased">
         <div class="relative min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-gray-950 dark:via-gray-900 dark:to-indigo-950 flex flex-col justify-center items-center px-4 py-8">
+            <div class="absolute top-4 left-4">
+                <a href="/" wire:navigate class="inline-flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors duration-150">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                    </svg>
+                    {{ __('Back') }}
+                </a>
+            </div>
             <div class="absolute top-4 right-4">
                 <x-theme-toggle />
             </div>
