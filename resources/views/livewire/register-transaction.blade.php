@@ -74,6 +74,7 @@ new class extends Component
         $this->resetValidation();
 
         $this->loadCategories();
+        $this->dispatch('categories-updated', categories: $this->categories->map(fn($c) => ['id' => $c->id, 'name' => $c->name, 'color' => $c->color])->values()->all());
     }
 
     public function submit(): void
@@ -145,6 +146,7 @@ new class extends Component
         }
     }"
     x-effect="$wire.set('category', categoryId)"
+    x-on:categories-updated.window="categories = $event.detail.categories"
     x-init="
         $watch('$wire.categories', (val) => {
             categories = val.map(c => ({id: c.id, name: c.name, color: c.color}))
