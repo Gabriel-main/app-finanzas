@@ -1,9 +1,29 @@
 [
     {
+        "type": "title",
+        "title": "Principal"
+    },
+    {
         "title": "Dashboard",
         "route": "dashboard",
         "icon": "dashboard",
         "active": ["dashboard"]
+    },
+    {
+        "title": "Mis Gastos",
+        "route": "gastos",
+        "icon": "expenses",
+        "active": ["gastos"]
+    },
+    {
+        "type": "title",
+        "title": "Configuración"
+    },
+    {
+        "title": "Personalización",
+        "route": "settings",
+        "icon": "palette",
+        "active": ["settings"]
     },
     {
         "title": "Settings",
@@ -17,11 +37,5 @@
                 "active": ["profile"]
             }
         ]
-    },
-    {
-        "title": "Mis Gastos",
-        "route": "gastos",
-        "icon": "expenses",
-        "active": ["gastos"]
     }
 ]

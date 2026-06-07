@@ -33,9 +33,10 @@
     <button
         type="button"
         x-on:click="$wire.set('open', true)"
-        class="fixed bottom-6 right-6 z-50 flex items-center justify-center w-14 h-14 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-indigo-400/50"
+        class="fixed bottom-6 right-6 z-50 flex items-center justify-center w-14 h-14 rounded-full text-white shadow-lg hover:shadow-xl transition-all duration-200 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2"
+        style="background-color: var(--color-primary); --tw-ring-color: var(--color-primary)"
     >
-        <svg class="w-6 h-6 transition-transform duration-200" :class="{ 'rotate-45': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.5v15m7.5-7.5h-15" />
         </svg>
     </button>
@@ -118,7 +119,8 @@
                         type="text"
                         wire:model="description"
                         placeholder="{{ __('Ej: Supermercado, Renta...') }}"
-                        class="w-full px-4 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                        class="w-full px-4 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-400 focus:ring-2 focus:border-transparent"
+                        style="--tw-ring-color: var(--color-primary)"
                     >
                 </div>
 
@@ -134,7 +136,8 @@
                             step="0.01"
                             wire:model="amount"
                             placeholder="0.00"
-                            class="w-full pl-8 pr-4 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                            class="w-full pl-8 pr-4 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-400 focus:ring-2 focus:border-transparent"
+                            style="--tw-ring-color: var(--color-primary)"
                         >
                     </div>
                 </div>
@@ -148,7 +151,8 @@
                         <button
                             type="button"
                             wire:click="toggleCategoryForm"
-                            class="text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors duration-150"
+                            class="text-xs font-medium transition-colors duration-150"
+                            style="color: var(--color-primary)"
                         >
                             <span x-text="$wire.showCategoryForm ? '{{ __("Cancelar") }}' : '+ {{ __("Crear categoría") }}'"></span>
                         </button>
@@ -160,8 +164,9 @@
                         <button
                             type="button"
                             x-on:click="dropdownOpen = !dropdownOpen"
-                            class="w-full flex items-center justify-between px-4 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-left focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors duration-150"
-                            :class="dropdownOpen ? 'ring-2 ring-indigo-500 border-transparent' : ''"
+                            class="w-full flex items-center justify-between px-4 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-left focus:ring-2 focus:border-transparent transition-colors duration-150"
+                            :class="dropdownOpen ? 'border-transparent' : ''"
+                            :style="dropdownOpen ? 'ring-color: var(--color-primary)' : ''"
                         >
                             <span class="flex items-center gap-2" x-show="selected">
                                 <span class="w-3 h-3 rounded-full shrink-0" :style="'background-color:' + selected?.color"></span>
@@ -197,7 +202,8 @@
                                         x-ref="searchInput"
                                         placeholder="{{ __('Buscar categoría...') }}"
                                         x-on:click.stop
-                                        class="w-full pl-8 pr-3 py-2 text-sm rounded-md border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-400 focus:ring-1 focus:ring-indigo-500 focus:border-transparent"
+                                        class="w-full pl-8 pr-3 py-2 text-sm rounded-md border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-400 focus:ring-1 focus:border-transparent"
+                                        style="--tw-ring-color: var(--color-primary)"
                                     >
                                 </div>
                             </div>
@@ -209,11 +215,12 @@
                                         type="button"
                                         x-on:click="select(cat.id)"
                                         class="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-left hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-100"
-                                        :class="categoryId == cat.id ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400' : 'text-gray-700 dark:text-gray-300'"
+                                        :class="categoryId == cat.id ? 'text-gray-900 dark:text-gray-200' : 'text-gray-700 dark:text-gray-300'"
+                                        :style="categoryId == cat.id ? 'background-color: var(--color-primary-light)' : ''"
                                     >
                                         <span class="w-3 h-3 rounded-full shrink-0" :style="'background-color:' + cat.color"></span>
                                         <span x-text="cat.name" class="flex-1"></span>
-                                        <svg x-show="categoryId == cat.id" class="w-4 h-4 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg x-show="categoryId == cat.id" class="w-4 h-4" style="color: var(--color-primary)" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                         </svg>
                                     </button>
@@ -230,7 +237,8 @@
                                 <button
                                     type="button"
                                     x-on:click="dropdownOpen = false; $wire.toggleCategoryForm()"
-                                    class="w-full flex items-center gap-2 px-3 py-2 text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-md transition-colors duration-150"
+                                    class="w-full flex items-center gap-2 px-3 py-2 text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-md transition-colors duration-150"
+                                    style="color: var(--color-primary)"
                                 >
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.5v15m7.5-7.5h-15" />
@@ -248,7 +256,8 @@
                                 type="text"
                                 wire:model="newCategoryName"
                                 placeholder="{{ __('Nombre de la categoría') }}"
-                                class="w-full px-4 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                class="w-full px-4 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-400 focus:ring-2 focus:border-transparent"
+                                style="--tw-ring-color: var(--color-primary)"
                             >
                             @error('newCategoryName')
                                 <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
@@ -264,7 +273,8 @@
                             <button
                                 type="button"
                                 wire:click="createCategory"
-                                class="px-3 py-1.5 text-xs font-medium rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white transition-colors duration-150"
+                                class="px-3 py-1.5 text-xs font-medium rounded-lg text-white transition-colors duration-150"
+                                style="background-color: var(--color-primary)"
                             >
                                 {{ __('Crear') }}
                             </button>
@@ -280,15 +290,17 @@
                     <input
                         type="date"
                         wire:model="date"
-                        class="w-full px-4 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                        class="w-full px-4 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:border-transparent"
+                        style="--tw-ring-color: var(--color-primary)"
                     >
                 </div>
 
                 {{-- Submit --}}
                 <button
                     type="submit"
-                    class="w-full py-2.5 text-sm font-semibold rounded-lg transition-all duration-150"
-                    :class="$wire.tab === 'expense' ? 'bg-red-600 hover:bg-red-700 text-white' : 'bg-emerald-600 hover:bg-emerald-700 text-white'"
+                    class="w-full py-2.5 text-sm font-semibold rounded-lg text-white transition-all duration-150"
+                    :class="$wire.tab === 'expense' ? 'hover:opacity-90' : 'hover:opacity-90'"
+                    :style="$wire.tab === 'expense' ? 'background-color: #ef4444' : 'background-color: #10b981'"
                 >
                     <span x-text="$wire.tab === 'expense' ? '{{ __("Registrar Gasto") }}' : '{{ __("Registrar Ingreso") }}'"></span>
                 </button>

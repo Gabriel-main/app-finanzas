@@ -20,8 +20,8 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <div class="relative overflow-hidden rounded-2xl bg-white dark:bg-gray-800 p-5 shadow-sm border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
             <div class="flex items-center justify-between mb-3">
-                <div class="p-2 rounded-lg bg-indigo-50 dark:bg-indigo-900/30">
-                    <svg class="w-5 h-5 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="p-2 rounded-lg" style="background-color: var(--color-primary-light)">
+                    <svg class="w-5 h-5" style="color: var(--color-primary)" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                 </div>
@@ -77,7 +77,7 @@
                 </h4>
                 <div class="flex items-center gap-4">
                     <div class="flex items-center gap-1.5">
-                        <span class="w-3 h-3 rounded-full bg-indigo-500"></span>
+                        <span class="w-3 h-3 rounded-full" style="background-color: var(--color-primary)"></span>
                         <span class="text-xs text-gray-500 dark:text-gray-400">{{ __('Ingresos') }}</span>
                     </div>
                     <div class="flex items-center gap-1.5">
@@ -96,7 +96,7 @@
                                     y="{{ 220 - ($bar['income'] / $maxChart) * 200 - 10 }}"
                                     width="{{ (600 / count($chartData)) - 6 }}"
                                     height="{{ ($bar['income'] / $maxChart) * 200 }}"
-                                    fill="#6366f1"
+                                    fill="var(--color-primary)"
                                     opacity="0.85"
                                     rx="4"
                                 />
@@ -163,7 +163,7 @@
                 <h4 class="text-lg font-semibold text-gray-900 dark:text-white">
                     {{ __('Transacciones Recientes') }}
                 </h4>
-                <a href="{{ route('gastos') }}" class="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors duration-150">
+                <a href="{{ route('gastos') }}" class="text-sm font-medium hover:underline transition-colors duration-150" style="color: var(--color-primary)">
                     {{ __('Ver todas') }} &rarr;
                 </a>
             </div>
@@ -224,8 +224,8 @@
                             </div>
                             <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2.5">
                                 <div
-                                    class="h-2.5 rounded-full transition-all duration-500 {{ $budget['percentage'] > 90 ? 'bg-red-500' : ($budget['percentage'] > 70 ? 'bg-amber-500' : 'bg-indigo-500') }}"
-                                    style="width: {{ min($budget['percentage'], 100) }}%"
+                                    class="h-2.5 rounded-full transition-all duration-500 {{ $budget['percentage'] > 90 ? 'bg-red-500' : ($budget['percentage'] > 70 ? 'bg-amber-500' : '') }}"
+                                    style="width: {{ min($budget['percentage'], 100) }}%; {{ $budget['percentage'] <= 70 ? 'background-color: var(--color-primary)' : '' }}"
                                 ></div>
                             </div>
                             <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">{{ $budget['percentage'] }}% utilizado</p>

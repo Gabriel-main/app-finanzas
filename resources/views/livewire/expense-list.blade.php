@@ -35,11 +35,12 @@
                         type="text"
                         wire:model.live="search"
                         placeholder="{{ __('Buscar...') }}"
-                        class="pl-10 pr-4 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent w-56"
+                        class="pl-10 pr-4 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-400 focus:ring-2 focus:border-transparent w-56"
+                        style="--tw-ring-color: var(--color-primary)"
                     >
                 </div>
 
-                <select wire:model.live="categoryFilter" class="px-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                <select wire:model.live="categoryFilter" class="px-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:border-transparent" style="--tw-ring-color: var(--color-primary)">
                     <option value="all">{{ __('Todas las categorías') }}</option>
                     @foreach($categories as $cat)
                         <option value="{{ $cat->id }}">{{ $cat->name }}</option>
@@ -49,10 +50,11 @@
                 <input
                     type="month"
                     wire:model.live="monthFilter"
-                    class="px-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    class="px-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:border-transparent"
+                    style="--tw-ring-color: var(--color-primary)"
                 >
 
-                <select wire:model.live="typeFilter" class="px-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                <select wire:model.live="typeFilter" class="px-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:border-transparent" style="--tw-ring-color: var(--color-primary)">
                     <option value="all">{{ __('Todos') }}</option>
                     <option value="expense">{{ __('Gastos') }}</option>
                     <option value="income">{{ __('Ingresos') }}</option>

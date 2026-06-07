@@ -18,6 +18,10 @@ Route::view('profile', 'web.profile')
     ->middleware(['auth'])
     ->name('profile');
 
+Route::view('settings', 'web.settings')
+    ->middleware(['auth'])
+    ->name('settings');
+
 Route::post('logout', function () {
     app(\App\Livewire\Actions\Logout::class)();
     return redirect('/');

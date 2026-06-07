@@ -4,27 +4,18 @@ function qs(sel) {
     return document.querySelector(sel)
 }
 
-function sidebarVisible() {
-    var aside = qs('[data-sidebar]')
-    return aside && aside.classList.contains('sidebar-visible')
+function isSidebarOpen() {
+    return document.documentElement.classList.contains('sidebar-open')
 }
 
-function applyContentShift() {
-    var content = qs('[data-sidebar-content]')
+function applyOverlay() {
     var overlay = qs('[data-sidebar-overlay]')
     var isLarge = window.innerWidth >= 1024
-    var visible = sidebarVisible()
-
-    if (content) {
-        content.style.marginLeft = (visible && isLarge) ? '16rem' : ''
-    }
-    if (overlay) overlay.classList.toggle('hidden', !visible || isLarge)
+    var open = isSidebarOpen()
+    if (overlay) overlay.classList.toggle('hidden', !open || isLarge)
 }
 
 function restoreSidebar() {
-    var aside = qs('[data-sidebar]')
-    if (!aside) return
-
     var saved = localStorage.getItem('sidebar_open')
     var isLarge = window.innerWidth >= 1024
 
@@ -34,12 +25,12 @@ function restoreSidebar() {
     }
 
     if (saved === 'true') {
-        aside.classList.add('sidebar-visible')
+        document.documentElement.classList.add('sidebar-open')
     } else {
-        aside.classList.remove('sidebar-visible')
+        document.documentElement.classList.remove('sidebar-open')
     }
 
-    applyContentShift()
+    applyOverlay()
 }
 
 function restoreTheme() {
@@ -61,21 +52,17 @@ document.addEventListener('livewire:navigated', function () {
 })
 
 window.addEventListener('resize', function () {
-    applyContentShift()
+    applyOverlay()
 })
 
 window.toggleSidebar = function () {
-    var aside = qs('[data-sidebar]')
-    if (!aside) return
-    var visible = aside.classList.toggle('sidebar-visible')
-    localStorage.setItem('sidebar_open', visible ? 'true' : 'false')
-    applyContentShift()
+    var open = document.documentElement.classList.toggle('sidebar-open')
+    localStorage.setItem('sidebar_open', open ? 'true' : 'false')
+    applyOverlay()
 }
 
 window.closeSidebar = function () {
-    var aside = qs('[data-sidebar]')
-    if (!aside) return
-    aside.classList.remove('sidebar-visible')
+    document.documentElement.classList.remove('sidebar-open')
     localStorage.setItem('sidebar_open', 'false')
-    applyContentShift()
+    applyOverlay()
 }

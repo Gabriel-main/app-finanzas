@@ -1,3 +1,11 @@
+@php
+    $userSettings = null;
+    if (auth()->check()) {
+        $userSettings = \App\Models\Setting::where('user_id', auth()->id())->first();
+    }
+    $appName = $userSettings?->app_name ?? config('app.name', 'Laravel');
+    $primaryColor = $userSettings?->primary_color ?? '#6366f1';
+@endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
@@ -5,7 +13,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        <title>{{ $appName }}</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -14,10 +22,54 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-        <script>
-            if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                document.documentElement.classList.add('dark');
+        <style>
+            :root {
+                --color-primary: {{ $primaryColor }};
+                --color-primary-rgb: {{ implode(',', sscanf($primaryColor, '#%02x%02x%02x')) }};
+                --color-primary-light: {{ $primaryColor }}15;
+                --color-primary-medium: {{ $primaryColor }}30;
             }
+
+            /* Sidebar visible by default on large screens, hidden on small */
+            [data-sidebar] {
+                transform: translateX(-100%);
+            }
+            html.sidebar-open [data-sidebar] {
+                transform: translateX(0);
+            }
+            html.sidebar-open [data-sidebar-content] {
+                margin-left: 16rem;
+            }
+            @media (max-width: 1023px) {
+                html.sidebar-open [data-sidebar-content] {
+                    margin-left: 0;
+                }
+                html.sidebar-open [data-sidebar-overlay] {
+                    display: block;
+                }
+            }
+        </style>
+
+        <script>
+            // Apply sidebar state immediately BEFORE DOM renders
+            (function() {
+                var saved = localStorage.getItem('sidebar_open');
+                var isLarge = window.innerWidth >= 1024;
+                if (saved === null) saved = isLarge ? 'true' : 'false';
+                if (saved === 'true') {
+                    document.documentElement.classList.add('sidebar-open');
+                }
+
+                if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    document.documentElement.classList.add('dark');
+                }
+            })();
+
+            document.addEventListener('livewire:initialized', () => {
+                Livewire.on('color-preview', (color) => {
+                    document.documentElement.style.setProperty('--color-primary', color);
+                });
+            });
         </script>
     </head>
     <body class="font-sans antialiased">
