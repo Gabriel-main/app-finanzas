@@ -16,8 +16,7 @@ function applyContentShift() {
     var visible = sidebarVisible()
 
     if (content) {
-        content.classList.remove('lg:ml-64')
-        content.classList.toggle('ml-64', visible && isLarge)
+        content.style.marginLeft = (visible && isLarge) ? '16rem' : ''
     }
     if (overlay) overlay.classList.toggle('hidden', !visible || isLarge)
 }
