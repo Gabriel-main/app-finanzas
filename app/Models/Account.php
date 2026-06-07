@@ -16,7 +16,7 @@ class Account extends Model
 
     public function currency()
     {
-        return $this->belongsTo(Currencies::class, 'currencies_id', 'id');
+        return $this->belongsTo(Currencies::class, 'currency_id', 'id');
     }
 
     public function transactions()

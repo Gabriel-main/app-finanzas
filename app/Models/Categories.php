@@ -18,11 +18,11 @@ class Categories extends Model
 
     public function transactions(): HasMany
     {
-        return $this->hasMany(Transaction::class);
+        return $this->hasMany(Transaction::class, 'category_id');
     }
 
     public function budgets(): HasMany
     {
-        return $this->hasMany(Budget::class);
+        return $this->hasMany(Budget::class, 'category_id');
     }
 }
