@@ -1,5 +1,7 @@
 <?php
 
+use App\Services\CategoryService;
+use Livewire\Attributes\Validate;
 use Livewire\Volt\Component;
 
 new class extends Component
@@ -11,15 +13,56 @@ new class extends Component
     public string $category = '';
     public string $date = '';
 
+    public bool $showCategoryForm = false;
+    public string $newCategoryName = '';
+    public string $newCategoryColor = '#6366f1';
+
+    /** @var \Illuminate\Database\Eloquent\Collection */
+    public $categories;
+
     public function mount(): void
     {
         $this->date = now()->format('Y-m-d');
+        $this->loadCategories();
     }
 
     public function toggleTab(string $tab): void
     {
         $this->tab = $tab;
         $this->category = '';
+        $this->loadCategories();
+    }
+
+    public function toggleCategoryForm(): void
+    {
+        $this->showCategoryForm = ! $this->showCategoryForm;
+        $this->newCategoryName = '';
+        $this->newCategoryColor = '#6366f1';
+    }
+
+    public function createCategory(): void
+    {
+        $this->validate([
+            'newCategoryName' => 'required|string|max:255',
+        ]);
+
+        $type = $this->tab === 'saving' ? 'income' : 'expense';
+
+        $newCategory = app(CategoryService::class)->createCategory(
+            auth()->id(),
+            [
+                'name' => $this->newCategoryName,
+                'type' => $type,
+                'color' => $this->newCategoryColor,
+            ],
+        );
+
+        $this->category = (string) $newCategory->id;
+        $this->showCategoryForm = false;
+        $this->newCategoryName = '';
+        $this->newCategoryColor = '#6366f1';
+
+        $this->loadCategories();
     }
 
     public function submit(): void
@@ -27,6 +70,12 @@ new class extends Component
         $this->reset(['description', 'amount', 'category']);
         $this->date = now()->format('Y-m-d');
         $this->open = false;
+    }
+
+    private function loadCategories(): void
+    {
+        $type = $this->tab === 'saving' ? 'income' : 'expense';
+        $this->categories = app(CategoryService::class)->getUserCategories(auth()->id(), $type);
     }
 }; ?>
 
@@ -148,24 +197,61 @@ new class extends Component
 
                 {{-- Category --}}
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                        {{ __('Categoría') }}
-                    </label>
-                    <select
-                        wire:model="category"
-                        class="w-full px-4 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                    >
-                        <option value="">{{ __('Seleccionar categoría') }}</option>
-                        <option value="Vivienda">{{ __('Vivienda') }}</option>
-                        <option value="Alimentación">{{ __('Alimentación') }}</option>
-                        <option value="Transporte">{{ __('Transporte') }}</option>
-                        <option value="Entretenimiento">{{ __('Entretenimiento') }}</option>
-                        <option value="Salud">{{ __('Salud') }}</option>
-                        <option value="Educación">{{ __('Educación') }}</option>
-                        <option value="Servicios">{{ __('Servicios') }}</option>
-                        <option value="Ahorro">{{ __('Ahorro') }}</option>
-                        <option value="Otros">{{ __('Otros') }}</option>
-                    </select>
+                    <div class="flex items-center justify-between mb-1.5">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            {{ __('Categoría') }}
+                        </label>
+                        <button
+                            type="button"
+                            wire:click="toggleCategoryForm"
+                            class="text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors duration-150"
+                        >
+                            <span x-text="$wire.showCategoryForm ? '{{ __("Cancelar") }}' : '+ {{ __("Crear categoría") }}'"></span>
+                        </button>
+                    </div>
+
+                    {{-- Category Select --}}
+                    <div x-show="!$wire.showCategoryForm">
+                        <select
+                            wire:model="category"
+                            class="w-full px-4 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                        >
+                            <option value="">{{ __('Seleccionar categoría') }}</option>
+                            @foreach($categories as $cat)
+                                <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    {{-- New Category Form --}}
+                    <div x-show="$wire.showCategoryForm" x-transition class="space-y-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600">
+                        <div>
+                            <input
+                                type="text"
+                                wire:model="newCategoryName"
+                                placeholder="{{ __('Nombre de la categoría') }}"
+                                class="w-full px-4 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                            >
+                            @error('newCategoryName')
+                                <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <label class="text-xs text-gray-500 dark:text-gray-400">{{ __('Color') }}</label>
+                            <input
+                                type="color"
+                                wire:model="newCategoryColor"
+                                class="w-8 h-8 rounded cursor-pointer border-0 p-0"
+                            >
+                            <button
+                                type="button"
+                                wire:click="createCategory"
+                                class="px-3 py-1.5 text-xs font-medium rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white transition-colors duration-150"
+                            >
+                                {{ __('Crear') }}
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 {{-- Date --}}
