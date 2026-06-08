@@ -21,7 +21,6 @@
             this.search = ''
         }
     }"
-    x-effect="$wire.set('category', categoryId)"
     x-on:categories-updated.window="categories = $event.detail.categories"
     x-init="
         $watch('$wire.categories', (val) => {
@@ -119,8 +118,8 @@
                         type="text"
                         wire:model="description"
                         placeholder="{{ __('Ej: Supermercado, Renta...') }}"
-                        class="w-full px-4 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-400 focus:ring-2 focus:border-transparent"
-                        style="--tw-ring-color: var(--color-primary)"
+                        class="w-full px-4 py-2.5 text-sm rounded-lg border bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-400 focus:ring-2 focus:border-transparent"
+                        style="border-color: var(--color-border); --tw-ring-color: var(--color-primary)"
                     >
                 </div>
 
@@ -136,8 +135,8 @@
                             step="0.01"
                             wire:model="amount"
                             placeholder="0.00"
-                            class="w-full pl-8 pr-4 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-400 focus:ring-2 focus:border-transparent"
-                            style="--tw-ring-color: var(--color-primary)"
+                            class="w-full pl-8 pr-4 py-2.5 text-sm rounded-lg border bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-400 focus:ring-2 focus:border-transparent"
+                            style="border-color: var(--color-border); --tw-ring-color: var(--color-primary)"
                         >
                     </div>
                 </div>
@@ -164,9 +163,9 @@
                         <button
                             type="button"
                             x-on:click="dropdownOpen = !dropdownOpen"
-                            class="w-full flex items-center justify-between px-4 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-left focus:ring-2 focus:border-transparent transition-colors duration-150"
+                            class="w-full flex items-center justify-between px-4 py-2.5 text-sm rounded-lg border bg-white dark:bg-gray-700 text-left focus:ring-2 focus:border-transparent transition-colors duration-150"
                             :class="dropdownOpen ? 'border-transparent' : ''"
-                            :style="dropdownOpen ? 'ring-color: var(--color-primary)' : ''"
+                            :style="dropdownOpen ? 'border-color: var(--color-primary); ring-color: var(--color-primary)' : 'border-color: var(--color-border)'"
                         >
                             <span class="flex items-center gap-2" x-show="selected">
                                 <span class="w-3 h-3 rounded-full shrink-0" :style="'background-color:' + selected?.color"></span>
@@ -188,10 +187,11 @@
                             x-transition:leave-start="opacity-100 scale-100"
                             x-transition:leave-end="opacity-0 scale-95"
                             x-on:click.away="dropdownOpen = false"
-                            class="absolute z-20 mt-1 w-full rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg overflow-hidden"
+                            class="absolute z-20 mt-1 w-full rounded-lg bg-white dark:bg-gray-800 shadow-lg overflow-hidden"
+                            style="border: 1px solid var(--color-border)"
                         >
                             {{-- Search --}}
-                            <div class="p-2 border-b border-gray-100 dark:border-gray-700">
+                            <div class="p-2" style="border-bottom: 1px solid var(--color-border)">
                                 <div class="relative">
                                     <svg class="w-4 h-4 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -202,8 +202,8 @@
                                         x-ref="searchInput"
                                         placeholder="{{ __('Buscar categoría...') }}"
                                         x-on:click.stop
-                                        class="w-full pl-8 pr-3 py-2 text-sm rounded-md border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-400 focus:ring-1 focus:border-transparent"
-                                        style="--tw-ring-color: var(--color-primary)"
+                                        class="w-full pl-8 pr-3 py-2 text-sm rounded-md border bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-400 focus:ring-1 focus:border-transparent"
+                                        style="border-color: var(--color-border); --tw-ring-color: var(--color-primary)"
                                     >
                                 </div>
                             </div>
@@ -233,7 +233,7 @@
                             </div>
 
                             {{-- Create button --}}
-                            <div class="p-2 border-t border-gray-100 dark:border-gray-700">
+                            <div class="p-2" style="border-top: 1px solid var(--color-border)">
                                 <button
                                     type="button"
                                     x-on:click="dropdownOpen = false; $wire.toggleCategoryForm()"
@@ -250,14 +250,14 @@
                     </div>
 
                     {{-- New Category Form --}}
-                    <div x-show="$wire.showCategoryForm" x-transition class="space-y-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600">
+                    <div x-show="$wire.showCategoryForm" x-transition class="space-y-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50" style="border: 1px solid var(--color-border)">
                         <div>
                             <input
                                 type="text"
                                 wire:model="newCategoryName"
                                 placeholder="{{ __('Nombre de la categoría') }}"
-                                class="w-full px-4 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-400 focus:ring-2 focus:border-transparent"
-                                style="--tw-ring-color: var(--color-primary)"
+                                class="w-full px-4 py-2.5 text-sm rounded-lg border bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-400 focus:ring-2 focus:border-transparent"
+                                style="border-color: var(--color-border); --tw-ring-color: var(--color-primary)"
                             >
                             @error('newCategoryName')
                                 <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
@@ -290,19 +290,24 @@
                     <input
                         type="date"
                         wire:model="date"
-                        class="w-full px-4 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:border-transparent"
-                        style="--tw-ring-color: var(--color-primary)"
+                        class="w-full px-4 py-2.5 text-sm rounded-lg border bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:border-transparent"
+                        style="border-color: var(--color-border); --tw-ring-color: var(--color-primary)"
                     >
                 </div>
 
                 {{-- Submit --}}
                 <button
                     type="submit"
-                    class="w-full py-2.5 text-sm font-semibold rounded-lg text-white transition-all duration-150"
-                    :class="$wire.tab === 'expense' ? 'hover:opacity-90' : 'hover:opacity-90'"
+                    wire:loading.attr="disabled"
+                    wire:loading.class="opacity-50 cursor-not-allowed"
+                    class="w-full py-2.5 text-sm font-semibold rounded-lg text-white transition-all duration-150 hover:opacity-90"
                     :style="$wire.tab === 'expense' ? 'background-color: #ef4444' : 'background-color: #10b981'"
                 >
-                    <span x-text="$wire.tab === 'expense' ? '{{ __("Registrar Gasto") }}' : '{{ __("Registrar Ingreso") }}'"></span>
+                    <span wire:loading.remove wire:target="submit" x-text="$wire.tab === 'expense' ? '{{ __("Registrar Gasto") }}' : '{{ __("Registrar Ingreso") }}'"></span>
+                    <span wire:loading wire:target="submit" class="flex items-center justify-center gap-2">
+                        <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" class="opacity-25"></circle><path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" class="opacity-75"></path></svg>
+                        {{ __('Guardando...') }}
+                    </span>
                 </button>
             </form>
         </div>

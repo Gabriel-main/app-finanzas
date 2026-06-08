@@ -31,9 +31,10 @@
 
 <aside
     data-sidebar
-    class="fixed inset-y-0 left-0 z-30 flex flex-col w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 transition-transform duration-200 ease-in-out"
+    class="fixed inset-y-0 left-0 z-30 flex flex-col w-64 bg-white dark:bg-gray-800 transition-transform duration-200 ease-in-out"
+    style="border-right: 2px solid var(--color-border)"
 >
-    <div class="flex items-center justify-between h-16 px-6 border-b border-gray-200 dark:border-gray-700">
+    <div class="flex items-center justify-between h-16 px-6" style="border-bottom: 2px solid var(--color-border)">
         <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center gap-2.5">
             @if($logoPath)
                 <img src="{{ asset('storage/' . $logoPath) }}" alt="{{ $appName }}" class="h-8 w-8 rounded-lg object-cover">
@@ -63,7 +64,8 @@
                     <button
                         type="button"
                         x-on:click="open = !open"
-                        class="flex items-center w-full gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors duration-150 {{ $hasActiveChild ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-gray-200' }}"
+                        class="flex items-center w-full gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors duration-150 {{ $hasActiveChild ? 'text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-gray-200' }}"
+                        @if($hasActiveChild) style="background-color: var(--color-primary-light); color: var(--color-primary)" @endif
                     >
                         {!! $icons[$item['icon']] ?? '' !!}
                         <span class="flex-1 text-start">{{ __($item['title']) }}</span>
@@ -81,7 +83,8 @@
                                 <a
                                     href="{{ route($sub['route']) }}"
                                     wire:navigate
-                                    class="flex items-center gap-3 px-3 py-2 ms-6 rounded-lg text-sm font-medium transition-colors duration-150 {{ $isSubActive ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-gray-200' }}"
+                                    class="flex items-center gap-3 px-3 py-2 ms-6 rounded-lg text-sm font-medium transition-colors duration-150 {{ $isSubActive ? 'text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-gray-200' }}"
+                                    @if($isSubActive) style="background-color: var(--color-primary-light); color: var(--color-primary)" @endif
                                 >
                                     {!! $icons[$sub['icon'] ?? ''] ?? '' !!}
                                     <span>{{ __($sub['title']) }}</span>
@@ -97,7 +100,8 @@
                 <a
                     href="{{ route($item['route']) }}"
                     wire:navigate
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors duration-150 {{ $isActive ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-gray-200' }}"
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors duration-150 {{ $isActive ? 'text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-gray-200' }}"
+                    @if($isActive) style="background-color: var(--color-primary-light); color: var(--color-primary)" @endif
                 >
                     {!! $icons[$item['icon']] ?? '' !!}
                     <span>{{ __($item['title']) }}</span>
@@ -106,7 +110,7 @@
         @endforeach
     </nav>
 
-    <div class="border-t border-gray-200 dark:border-gray-700 p-4 space-y-3">
+    <div class="p-4 space-y-3" style="border-top: 2px solid var(--color-border)">
         <div class="flex items-center gap-3 px-3">
             <div class="flex-1 min-w-0">
                 <p class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">

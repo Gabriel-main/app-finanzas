@@ -17,12 +17,13 @@ class ExpenseList extends Component
     public string $sortField = 'transaction_date';
     public string $sortDirection = 'desc';
     protected int $perPage = 10;
+    private ?\Illuminate\Support\Collection $cachedAccountIds = null;
 
     protected $listeners = ['transaction-saved' => '$refresh'];
 
     public function mount(): void
     {
-        $this->monthFilter = now()->format('Y-m');
+        //
     }
 
     public function updatedSearch(): void
@@ -55,12 +56,15 @@ class ExpenseList extends Component
         }
     }
 
+    private function getAccountIds(): \Illuminate\Support\Collection
+    {
+        return $this->cachedAccountIds
+            ??= auth()->user()->accounts()->pluck('id');
+    }
+
     public function getTransactionsProperty()
     {
-        $user = auth()->user();
-        $accountIds = $user->accounts()->pluck('id');
-
-        $query = Transaction::whereIn('account_id', $accountIds)
+        $query = Transaction::whereIn('account_id', $this->getAccountIds())
             ->with(['category', 'account']);
 
         if ($this->search) {
@@ -86,24 +90,27 @@ class ExpenseList extends Component
 
     public function getCategoriesProperty()
     {
-        $user = auth()->user();
-        $accountIds = $user->accounts()->pluck('id');
-
-        return \App\Models\Categories::whereHas('transactions', function ($q) use ($accountIds) {
-            $q->whereIn('account_id', $accountIds);
+        return \App\Models\Categories::whereHas('transactions', function ($q) {
+            $q->whereIn('account_id', $this->getAccountIds());
         })->get();
     }
 
     public function deleteTransaction(string $id): void
     {
-        $user = auth()->user();
-        $accountIds = $user->accounts()->pluck('id');
+        try {
+            $deleted = Transaction::whereIn('account_id', $this->getAccountIds())
+                ->where('id', $id)
+                ->delete();
 
-        Transaction::whereIn('account_id', $accountIds)
-            ->where('id', $id)
-            ->delete();
-
-        $this->dispatch('transaction-deleted');
+            if ($deleted) {
+                $this->dispatch('transaction-deleted');
+                $this->dispatch('show-toast', message: 'Transacción eliminada.', type: 'success');
+            } else {
+                $this->dispatch('show-toast', message: 'Transacción no encontrada.', type: 'error');
+            }
+        } catch (\Exception $e) {
+            $this->dispatch('show-toast', message: 'Error al eliminar la transacción.', type: 'error');
+        }
     }
 
     public function render()

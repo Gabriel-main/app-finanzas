@@ -18,7 +18,7 @@
 
     {{-- Stats Cards --}}
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <div class="relative overflow-hidden rounded-2xl bg-white dark:bg-gray-800 p-5 shadow-sm border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
+        <div class="relative overflow-hidden rounded-2xl bg-white dark:bg-gray-800 p-5 shadow-sm border transition-all duration-200 hover:shadow-md hover:-translate-y-0.5" style="border-color: var(--color-border)">
             <div class="flex items-center justify-between mb-3">
                 <div class="p-2 rounded-lg" style="background-color: var(--color-primary-light)">
                     <svg class="w-5 h-5" style="color: var(--color-primary)" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -30,7 +30,7 @@
             <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">${{ number_format($totalBalance, 2) }}</p>
         </div>
 
-        <div class="relative overflow-hidden rounded-2xl bg-white dark:bg-gray-800 p-5 shadow-sm border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
+        <div class="relative overflow-hidden rounded-2xl bg-white dark:bg-gray-800 p-5 shadow-sm border transition-all duration-200 hover:shadow-md hover:-translate-y-0.5" style="border-color: var(--color-border)">
             <div class="flex items-center justify-between mb-3">
                 <div class="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-900/30">
                     <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -42,7 +42,7 @@
             <p class="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">${{ number_format($monthlyIncome, 2) }}</p>
         </div>
 
-        <div class="relative overflow-hidden rounded-2xl bg-white dark:bg-gray-800 p-5 shadow-sm border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
+        <div class="relative overflow-hidden rounded-2xl bg-white dark:bg-gray-800 p-5 shadow-sm border transition-all duration-200 hover:shadow-md hover:-translate-y-0.5" style="border-color: var(--color-border)">
             <div class="flex items-center justify-between mb-3">
                 <div class="p-2 rounded-lg bg-rose-50 dark:bg-rose-900/30">
                     <svg class="w-5 h-5 text-rose-600 dark:text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -54,7 +54,7 @@
             <p class="text-2xl font-bold text-rose-600 dark:text-rose-400 mt-1">${{ number_format($monthlyExpenses, 2) }}</p>
         </div>
 
-        <div class="relative overflow-hidden rounded-2xl bg-white dark:bg-gray-800 p-5 shadow-sm border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
+        <div class="relative overflow-hidden rounded-2xl bg-white dark:bg-gray-800 p-5 shadow-sm border transition-all duration-200 hover:shadow-md hover:-translate-y-0.5" style="border-color: var(--color-border)">
             <div class="flex items-center justify-between mb-3">
                 <div class="p-2 rounded-lg bg-amber-50 dark:bg-amber-900/30">
                     <svg class="w-5 h-5 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -70,7 +70,7 @@
     {{-- Charts Section --}}
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         {{-- Income vs Expense Chart --}}
-        <div class="lg:col-span-2 rounded-2xl bg-white dark:bg-gray-800 p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+        <div class="lg:col-span-2 rounded-2xl bg-white dark:bg-gray-800 p-6 shadow-sm border" style="border-color: var(--color-border)">
             <div class="flex items-center justify-between mb-6">
                 <h4 class="text-lg font-semibold text-gray-900 dark:text-white">
                     {{ __('Ingresos vs Gastos') }}
@@ -126,7 +126,7 @@
         </div>
 
         {{-- Expense Distribution --}}
-        <div class="rounded-2xl bg-white dark:bg-gray-800 p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+        <div class="rounded-2xl bg-white dark:bg-gray-800 p-6 shadow-sm border" style="border-color: var(--color-border)">
             <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">
                 {{ __('Distribución de Gastos') }}
             </h4>
@@ -158,12 +158,12 @@
     {{-- Recent Transactions + Budgets --}}
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {{-- Recent Transactions --}}
-        <div class="lg:col-span-2 rounded-2xl bg-white dark:bg-gray-800 p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+        <div class="lg:col-span-2 rounded-2xl bg-white dark:bg-gray-800 p-6 shadow-sm border" style="border-color: var(--color-border)">
             <div class="flex items-center justify-between mb-4">
                 <h4 class="text-lg font-semibold text-gray-900 dark:text-white">
                     {{ __('Transacciones Recientes') }}
                 </h4>
-                <a href="{{ route('gastos') }}" class="text-sm font-medium hover:underline transition-colors duration-150" style="color: var(--color-primary)">
+                <a href="{{ route('gastos') }}" wire:navigate class="text-sm font-medium hover:underline transition-colors duration-150" style="color: var(--color-primary)">
                     {{ __('Ver todas') }} &rarr;
                 </a>
             </div>
@@ -205,7 +205,7 @@
         </div>
 
         {{-- Budget Progress --}}
-        <div class="rounded-2xl bg-white dark:bg-gray-800 p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+        <div class="rounded-2xl bg-white dark:bg-gray-800 p-6 shadow-sm border" style="border-color: var(--color-border)">
             <div class="flex items-center justify-between mb-4">
                 <h4 class="text-lg font-semibold text-gray-900 dark:text-white">
                     {{ __('Presupuestos') }}

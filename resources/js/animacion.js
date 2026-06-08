@@ -1,3 +1,5 @@
+var activeDropContainer = null;
+
 window.toggleTheme = function () {
     createDropEffect(window.innerWidth / 2, window.innerHeight / 2)
     applyTheme()
@@ -15,11 +17,16 @@ function applyTheme() {
 }
 
 function createDropEffect(x, y) {
+    if (activeDropContainer) {
+        activeDropContainer.remove();
+    }
+
     var container = document.createElement('div')
     container.className = 'drop-container'
     container.style.left = x + 'px'
     container.style.top = y + 'px'
     document.body.appendChild(container)
+    activeDropContainer = container;
 
     var drop = document.createElement('div')
     drop.className = 'water-drop'
@@ -37,5 +44,8 @@ function createDropEffect(x, y) {
 
     setTimeout(function () {
         container.remove()
+        if (activeDropContainer === container) {
+            activeDropContainer = null;
+        }
     }, 1300)
 }

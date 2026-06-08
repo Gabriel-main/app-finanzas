@@ -18,14 +18,15 @@
 
             {{-- App Name (Admin Only) --}}
             @if($isAdmin)
-            <div class="rounded-2xl bg-white dark:bg-gray-800 p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+            <div class="rounded-2xl bg-white dark:bg-gray-800 p-6 shadow-sm border" style="border-color: var(--color-border)">
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     {{ __('Nombre de la Aplicación') }}
                 </label>
                 <input
                     type="text"
                     wire:model="appName"
-                    class="w-full px-4 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:border-transparent"
+                    class="w-full px-4 py-2.5 text-sm rounded-lg border bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:border-transparent"
+                    style="border-color: var(--color-border); --tw-ring-color: var(--color-primary)"
                 >
                 @error('appName')
                     <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
@@ -34,7 +35,7 @@
             @endif
 
             {{-- Primary Color --}}
-            <div class="rounded-2xl bg-white dark:bg-gray-800 p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+            <div class="rounded-2xl bg-white dark:bg-gray-800 p-6 shadow-sm border" style="border-color: var(--color-border)">
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                     {{ __('Color del Tema') }}
                 </label>
@@ -45,13 +46,15 @@
                         <input
                             type="color"
                             wire:model.live="primaryColor"
-                            class="w-12 h-12 rounded-lg cursor-pointer border-2 border-gray-200 dark:border-gray-600 p-0.5"
+                            class="w-12 h-12 rounded-lg cursor-pointer p-0.5"
+                            style="border: 2px solid var(--color-border)"
                         >
                         <div class="flex-1">
                             <input
                                 type="text"
                                 wire:model.live="primaryColor"
-                                class="w-full px-4 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 font-mono focus:ring-2 focus:border-transparent"
+                                class="w-full px-4 py-2.5 text-sm rounded-lg border bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 font-mono focus:ring-2 focus:border-transparent"
+                                style="border-color: var(--color-border); --tw-ring-color: var(--color-primary)"
                             >
                         </div>
                     </div>
@@ -70,8 +73,8 @@
                                 <button
                                     type="button"
                                     wire:click="setPrimaryColor('{{ $color }}')"
-                                    class="w-8 h-8 rounded-full border-2 transition-all duration-150 {{ $primaryColor === $color ? 'border-gray-900 dark:border-white scale-110' : 'border-gray-200 dark:border-gray-600 hover:scale-105' }}"
-                                    style="background-color: {{ $color }}"
+                                    class="w-8 h-8 rounded-full transition-all duration-150 {{ $primaryColor === $color ? 'scale-110' : 'hover:scale-105' }}"
+                                    style="background-color: {{ $color }}; border: 2px solid {{ $primaryColor === $color ? 'var(--color-primary)' : 'var(--color-border)' }}"
                                     title="{{ $name }}"
                                 ></button>
                             @endforeach
@@ -81,7 +84,8 @@
                                 <button
                                     type="button"
                                     wire:click="setPrimaryColor('{{ $color }}')"
-                                    class="flex items-center gap-2 px-3 py-2 rounded-lg border-2 transition-all duration-150 {{ $primaryColor === $color ? 'border-gray-900 dark:border-white bg-gray-100 dark:bg-gray-700' : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700/50' }}"
+                                    class="flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-150 {{ $primaryColor === $color ? 'bg-gray-100 dark:bg-gray-700' : 'hover:bg-gray-50 dark:hover:bg-gray-700/50' }}"
+                                    style="border: 2px solid {{ $primaryColor === $color ? 'var(--color-primary)' : 'var(--color-border)' }}"
                                 >
                                     <span class="w-4 h-4 rounded-full" style="background-color: {{ $color }}"></span>
                                     <span class="text-sm text-gray-700 dark:text-gray-300">{{ $name }}</span>
@@ -98,7 +102,7 @@
                         <button type="button" class="px-4 py-2 rounded-lg text-white text-sm font-medium" style="background-color: {{ $primaryColor }}">
                             Botón principal
                         </button>
-                        <button type="button" class="px-4 py-2 rounded-lg text-sm font-medium border-2" style="border-color: {{ $primaryColor }}; color: {{ $primaryColor }}">
+                        <button type="button" class="px-4 py-2 rounded-lg text-sm font-medium" style="border: 2px solid {{ $primaryColor }}; color: {{ $primaryColor }}">
                             Secundario
                         </button>
                     </div>
@@ -107,14 +111,14 @@
 
             {{-- Logo (Admin Only) --}}
             @if($isAdmin)
-            <div class="rounded-2xl bg-white dark:bg-gray-800 p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+            <div class="rounded-2xl bg-white dark:bg-gray-800 p-6 shadow-sm border" style="border-color: var(--color-border)">
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                     {{ __('Logo') }}
                 </label>
 
                 @if($currentLogo && !$logo)
                     <div class="flex items-center gap-4 mb-4">
-                        <img src="{{ asset('storage/' . $currentLogo) }}" alt="Logo" class="w-16 h-16 rounded-lg object-cover border border-gray-200 dark:border-gray-600">
+                        <img src="{{ asset('storage/' . $currentLogo) }}" alt="Logo" class="w-16 h-16 rounded-lg object-cover" style="border: 1px solid var(--color-border)">
                         <button
                             type="button"
                             wire:click="removeLogo"
@@ -126,7 +130,7 @@
                 @endif
 
                 <div class="flex items-center gap-4">
-                    <label class="flex flex-col items-center justify-center w-32 h-32 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-indigo-400 dark:hover:border-indigo-500 cursor-pointer transition-colors duration-150 bg-gray-50 dark:bg-gray-700/50">
+                    <label class="flex flex-col items-center justify-center w-32 h-32 rounded-xl border-2 border-dashed cursor-pointer transition-colors duration-150 bg-gray-50 dark:bg-gray-700/50" style="border-color: var(--color-border)">
                         @if($logo)
                             <img src="{{ $logo->temporaryUrl() }}" class="w-full h-full object-cover rounded-xl">
                         @else

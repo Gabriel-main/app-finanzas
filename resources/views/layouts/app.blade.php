@@ -1,8 +1,7 @@
 @php
-    $userSettings = null;
-    if (auth()->check()) {
-        $userSettings = \App\Models\Setting::where('user_id', auth()->id())->first();
-    }
+    $userSettings = auth()->check()
+        ? \App\Models\Setting::where('user_id', auth()->id())->first()
+        : null;
     $appName = $userSettings?->app_name ?? config('app.name', 'Laravel');
     $primaryColor = $userSettings?->primary_color ?? '#6366f1';
 @endphp
@@ -28,6 +27,7 @@
                 --color-primary-rgb: {{ implode(',', sscanf($primaryColor, '#%02x%02x%02x')) }};
                 --color-primary-light: {{ $primaryColor }}15;
                 --color-primary-medium: {{ $primaryColor }}30;
+                --color-border: {{ $primaryColor }}40;
             }
 
             /* Sidebar visible by default on large screens, hidden on small */
@@ -47,6 +47,37 @@
                 html.sidebar-open [data-sidebar-overlay] {
                     display: block;
                 }
+            }
+
+            /* Wire:navigate loading bar */
+            .wire-loading-bar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 3px;
+                z-index: 9999;
+                overflow: hidden;
+                background-color: transparent;
+            }
+            .wire-loading-bar::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: 100%;
+                width: 0%;
+                background-color: var(--color-primary);
+                transition: width 0.3s ease;
+            }
+            .wire-loading-bar[wire\\:loading]::after {
+                width: 70%;
+                animation: wire-loading-progress 1.5s ease-in-out infinite;
+            }
+            @keyframes wire-loading-progress {
+                0% { width: 0%; margin-left: 0; }
+                50% { width: 70%; margin-left: 15%; }
+                100% { width: 0%; margin-left: 100%; }
             }
         </style>
 
@@ -73,13 +104,14 @@
         </script>
     </head>
     <body class="font-sans antialiased">
+        <div wire:loading.class="wire-loading-bar" class="wire-loading-bar"></div>
         <div x-data="{ toasts: [], addToast(msg, type = 'success') { const id = Date.now(); this.toasts.push({ id, msg, type }); setTimeout(() => this.toasts = this.toasts.filter(t => t.id !== id), 4000); } }"
              x-on:show-toast.window="addToast($event.detail.message, $event.detail.type ?? 'success')"
              class="min-h-screen bg-gray-100 dark:bg-gray-900">
             <x-sidebar />
 
             <div data-sidebar-content class="transition-all duration-200">
-                <div class="sticky top-0 z-40 flex items-center justify-between bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 h-14">
+                <div class="sticky top-0 z-40 flex items-center justify-between bg-white dark:bg-gray-800 px-4 h-16" style="border-bottom: 2px solid var(--color-border)">
                     <button
                         type="button"
                         onclick="window.toggleSidebar()"
