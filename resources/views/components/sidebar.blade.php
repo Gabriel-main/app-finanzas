@@ -39,7 +39,7 @@
             @if($logoPath)
                 <img src="{{ asset('storage/' . $logoPath) }}" alt="{{ $appName }}" class="h-8 w-8 rounded-lg object-cover">
             @else
-                <x-application-logo class="h-8 w-8 text-indigo-600 dark:text-indigo-400" />
+                <x-application-logo class="h-8 w-8" style="color: var(--color-primary)" />
             @endif
             <span class="font-bold text-lg text-gray-800 dark:text-white">{{ $appName }}</span>
         </a>
@@ -121,14 +121,14 @@
                 </p>
             </div>
         </div>
-        <div class="flex items-center justify-between px-3">
+        <div class="px-3">
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <button type="submit" class="inline-flex items-center text-sm text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors duration-150">
-                    <svg class="w-4 h-4 me-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button type="submit" class="inline-flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors duration-150">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
                     </svg>
-                    {{ __('Log Out') }}
+                    {{ __('Cerrar Sesión') }}
                 </button>
             </form>
         </div>

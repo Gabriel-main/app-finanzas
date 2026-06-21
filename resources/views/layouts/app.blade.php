@@ -79,6 +79,15 @@
                 50% { width: 70%; margin-left: 15%; }
                 100% { width: 0%; margin-left: 100%; }
             }
+
+            /* Bottom nav fade-in */
+            @keyframes fade-in {
+                from { opacity: 0; transform: scale(0.5); }
+                to { opacity: 1; transform: scale(1); }
+            }
+            .animate-fade-in {
+                animation: fade-in 0.2s ease-out;
+            }
         </style>
 
         <script>
@@ -132,10 +141,12 @@
                     </header>
                 @endif
 
-                <main>
+                <main class="p-4 sm:p-6 lg:p-8 pb-24 lg:pb-8">
                     {{ $slot }}
                 </main>
             </div>
+
+            <x-bottom-nav />
 
             <div
                 data-sidebar-overlay
