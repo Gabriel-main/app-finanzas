@@ -4,7 +4,7 @@
         "title": "Principal"
     },
     {
-        "title": "Dashboard",
+        "title": "Inicio",
         "route": "dashboard",
         "icon": "dashboard",
         "active": ["dashboard"]
@@ -26,17 +26,16 @@
         "active": ["settings"]
     },
     {
-        "title": "Settings",
+        "title": "Ajustes",
         "icon": "cog",
         "active": ["profile"],
         "submenu": [
             {
-                "title": "Profile",
+                "title": "Perfil",
                 "route": "profile",
                 "icon": "user",
                 "active": ["profile"]
             }
         ]
     }
-
 ]
