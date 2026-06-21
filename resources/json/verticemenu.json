@@ -32,7 +32,7 @@
         "title": "Ajustes",
         "icon": "cog",
         "active": ["profile"],
-        "visible": true,
+        "visible": false,
         "submenu": [
             {
                 "title": "Perfil",

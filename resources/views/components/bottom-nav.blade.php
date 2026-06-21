@@ -1,11 +1,35 @@
 @php
     $currentRoute = request()->route()?->getName() ?? '';
-    $items = [
-        ['title' => 'Inicio', 'route' => 'dashboard', 'icon' => 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6'],
-        ['title' => 'Gastos', 'route' => 'gastos', 'icon' => 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z'],
-        ['title' => 'Tema', 'route' => 'settings', 'icon' => 'M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01'],
-        ['title' => 'Perfil', 'route' => 'profile', 'icon' => 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z'],
+    $menu = json_decode(file_get_contents(resource_path('json/verticemenu.json')), true);
+
+    $icons = [
+        'dashboard' => 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6',
+        'expenses' => 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
+        'palette' => 'M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01',
+        'user' => 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z',
     ];
+
+    $bottomItems = [];
+    foreach ($menu as $item) {
+        if (($item['visible'] ?? true) === false) continue;
+        if (($item['type'] ?? '') === 'title') continue;
+        if (isset($item['submenu'])) {
+            foreach ($item['submenu'] as $sub) {
+                if (($sub['visible'] ?? true) === false) continue;
+                $bottomItems[] = [
+                    'title' => $sub['title'],
+                    'route' => $sub['route'],
+                    'icon' => $icons[$sub['icon']] ?? '',
+                ];
+            }
+        } else {
+            $bottomItems[] = [
+                'title' => $item['title'],
+                'route' => $item['route'],
+                'icon' => $icons[$item['icon']] ?? '',
+            ];
+        }
+    }
 @endphp
 
 <nav
@@ -13,7 +37,7 @@
     class="fixed bottom-0 left-0 right-0 z-50 lg:hidden flex justify-center px-3 pb-2 pointer-events-none"
 >
     <div class="relative flex w-full max-w-md justify-around items-center bg-white dark:bg-gray-800 px-2 py-2 shadow-xl rounded-b-3xl rounded-t-xl pointer-events-auto" style="border-top: 1px solid var(--color-border)">
-        @foreach($items as $item)
+        @foreach($bottomItems as $item)
             @php
                 $isActive = str_starts_with($currentRoute, $item['route']);
             @endphp
