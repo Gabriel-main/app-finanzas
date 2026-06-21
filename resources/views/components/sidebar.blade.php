@@ -52,6 +52,8 @@
 
     <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-0.5">
         @foreach($menu as $item)
+            @continue(($item['visible'] ?? true) === false)
+
             @if(($item['type'] ?? '') === 'title')
                 <p class="px-3 pt-4 pb-1 text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
                     {{ __($item['title']) }}
@@ -77,6 +79,7 @@
                     <div x-show="open" x-collapse.duration.150ms>
                         <div class="mt-0.5 space-y-0.5">
                             @foreach($item['submenu'] as $sub)
+                                @continue(($sub['visible'] ?? true) === false)
                                 @php
                                     $isSubActive = isActive($sub['active'] ?? [$sub['route']]);
                                 @endphp

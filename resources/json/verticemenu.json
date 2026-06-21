@@ -7,13 +7,15 @@
         "title": "Inicio",
         "route": "dashboard",
         "icon": "dashboard",
-        "active": ["dashboard"]
+        "active": ["dashboard"],
+        "visible": true
     },
     {
         "title": "Mis Gastos",
         "route": "gastos",
         "icon": "expenses",
-        "active": ["gastos"]
+        "active": ["gastos"],
+        "visible": true
     },
     {
         "type": "title",
@@ -23,18 +25,21 @@
         "title": "Personalización",
         "route": "settings",
         "icon": "palette",
-        "active": ["settings"]
+        "active": ["settings"],
+        "visible": true
     },
     {
         "title": "Ajustes",
         "icon": "cog",
         "active": ["profile"],
+        "visible": true,
         "submenu": [
             {
                 "title": "Perfil",
                 "route": "profile",
                 "icon": "user",
-                "active": ["profile"]
+                "active": ["profile"],
+                "visible": true
             }
         ]
     }
