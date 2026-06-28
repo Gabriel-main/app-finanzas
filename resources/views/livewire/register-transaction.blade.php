@@ -132,24 +132,28 @@
 
         {{-- Form --}}
         <form wire:submit="submit" class="px-6 pb-6 space-y-5">
-            {{-- Amount (Prominent) --}}
-            <div class="text-center py-4">
-                <label class="block text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2">
+            {{-- Amount --}}
+            <div>
+                <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">
                     {{ __('Monto') }}
                 </label>
-                <div class="relative inline-flex items-center">
-                    <span class="text-3xl font-light text-gray-300 dark:text-gray-600 mr-1" x-text="selectedAccount?.symbol || '$'"></span>
+                <div class="relative">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-medium text-gray-400 dark:text-gray-500" x-text="selectedAccount?.symbol || '$'"></span>
                     <input
-                        type="number"
-                        step="0.01"
+                        type="text"
+                        inputmode="decimal"
+                        pattern="[0-9]*\.?[0-9]*"
                         wire:model="amount"
                         placeholder="0.00"
-                        class="text-4xl font-bold text-center bg-transparent border-0 focus:outline-none focus:ring-0 w-full max-w-[12rem] text-gray-900 dark:text-white placeholder-gray-200 dark:placeholder-gray-700"
+                        x-on:keypress="$event.target.value.match(/^[0-9]*\.?[0-9]*$/) || $event.preventDefault()"
+                        x-on:paste="$event.clipboardData.getData('text').match(/^[0-9]*\.?[0-9]*$/) || $event.preventDefault()"
+                        x-on:input="$event.target.value = $event.target.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1')"
+                        class="w-full pl-10 pr-4 py-3 text-sm rounded-xl border-0 bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-gray-200 placeholder-gray-400 focus:ring-2 focus:bg-white dark:focus:bg-gray-700 transition-all duration-150 font-semibold"
+                        style="--tw-ring-color: var(--color-primary)"
                     >
                 </div>
-                <div class="w-32 h-0.5 mx-auto mt-2 rounded-full" style="background-color: var(--color-primary-medium)"></div>
                 @error('amount')
-                    <p class="text-xs text-red-500 mt-2">{{ $message }}</p>
+                    <p class="text-xs text-red-500 mt-1.5">{{ $message }}</p>
                 @enderror
             </div>
 

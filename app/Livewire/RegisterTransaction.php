@@ -76,6 +76,17 @@ class RegisterTransaction extends Component
             'category' => ['required', 'exists:categories,id'],
             'date' => ['required', 'date'],
             'accountId' => ['required', 'exists:accounts,id'],
+        ], [
+            'description.required' => 'La descripción es obligatoria.',
+            'amount.required' => 'El monto es obligatorio.',
+            'amount.numeric' => 'El monto debe ser un número válido.',
+            'amount.min' => 'El monto debe ser mayor a 0.',
+            'category.required' => 'Selecciona una categoría.',
+            'category.exists' => 'La categoría seleccionada no es válida.',
+            'date.required' => 'La fecha es obligatoria.',
+            'date.date' => 'La fecha debe ser válida.',
+            'accountId.required' => 'Selecciona una cuenta.',
+            'accountId.exists' => 'La cuenta seleccionada no es válida.',
         ]);
 
         $type = $this->tab === 'income' ? 'income' : 'expense';
