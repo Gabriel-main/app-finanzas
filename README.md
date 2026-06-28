@@ -96,7 +96,7 @@ app-finanzas/
 
 - PHP 8.3+
 - Composer
-- Node.js 20+ / pnpm
+- Node.js 20+ / npm
 - SQLite (incluido en PHP por defecto)
 
 ### Instalación Local
@@ -108,7 +108,7 @@ cd app-finanzas
 
 # 2. Instalar dependencias
 composer install
-pnpm install
+npm install
 
 # 3. Configurar entorno
 cp .env.example .env
@@ -121,7 +121,7 @@ touch database/database.sqlite
 php artisan migrate --seed
 
 # 6. Compilar assets
-pnpm run build
+npm run build
 
 # 7. Iniciar servidor
 php artisan serve
@@ -155,15 +155,8 @@ composer dev
 php artisan serve
 php artisan queue:listen
 php artisan pail
-pnpm run dev
+npm run dev
 ```
-
-## Usuarios de Prueba
-
-| Email | Rol | Contraseña |
-|---|---|---|
-| `test@example.com` | Usuario | `password` |
-| `admin@app-finanzas.test` | Admin | `password` |
 
 ## Testing
 
@@ -197,8 +190,8 @@ El proyecto sigue **Arquitectura Limpia** con separación en capas:
 | `php artisan migrate` | Ejecutar migraciones pendientes |
 | `php artisan migrate:fresh --seed` | Recrear DB con seeders |
 | `php artisan db:seed --class=GlobalSettingsSeeder` | Insertar configuración global |
-| `pnpm run build` | Compilar assets para producción |
-| `pnpm run dev` | Compilar con hot-reload (Vite) |
+| `npm run build` | Compilar assets para producción |
+| `npm run dev` | Compilar con hot-reload (Vite) |
 
 ## License
 
