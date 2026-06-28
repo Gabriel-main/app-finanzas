@@ -78,17 +78,31 @@
             </div>
             @if(count($chartData) > 0)
                 <div
-                    x-data
+                    x-data="{
+                        incomeData: @js(collect($chartData)->pluck('income')->toArray()),
+                        expenseData: @js(collect($chartData)->pluck('expense')->toArray()),
+                        monthsData: @js(collect($chartData)->pluck('month')->toArray())
+                    }"
                     x-init="
                         $nextTick(() => {
                             window.initBarChart('#chart-bar', {
-                                income: @js(collect($chartData)->pluck('income')->toArray()),
-                                expense: @js(collect($chartData)->pluck('expense')->toArray()),
-                                months: @js(collect($chartData)->pluck('month')->toArray()),
+                                income: incomeData,
+                                expense: expenseData,
+                                months: monthsData,
                                 colors: { income: '{{ $chartIncomeColor }}', expense: '{{ $chartExpenseColor }}' },
                                 labels: { income: '{{ __("Ingresos") }}', expense: '{{ __("Gastos") }}' },
                                 noData: '{{ __("Sin datos para mostrar") }}'
                             })
+                        })
+                    "
+                    x-effect="
+                        incomeData = @js(collect($chartData)->pluck('income')->toArray());
+                        expenseData = @js(collect($chartData)->pluck('expense')->toArray());
+                        monthsData = @js(collect($chartData)->pluck('month')->toArray());
+                        window.updateBarChart && window.updateBarChart({
+                            income: incomeData,
+                            expense: expenseData,
+                            labels: { income: '{{ __("Ingresos") }}', expense: '{{ __("Gastos") }}' }
                         })
                     "
                     wire:ignore
@@ -109,17 +123,27 @@
             </h4>
             @if(count($categoryDistribution) > 0)
                 <div
-                    x-data
+                    x-data="{
+                        seriesData: @js(collect($categoryDistribution)->pluck('percentage')->toArray()),
+                        colorsData: @js(collect($categoryDistribution)->pluck('color')->toArray()),
+                        labelsData: @js(collect($categoryDistribution)->pluck('name')->toArray())
+                    }"
                     x-init="
                         $nextTick(() => {
                             window.initDonutChart('#chart-donut', {
-                                series: @js(collect($categoryDistribution)->pluck('percentage')->toArray()),
-                                colors: @js(collect($categoryDistribution)->pluck('color')->toArray()),
-                                labels: @js(collect($categoryDistribution)->pluck('name')->toArray()),
+                                series: seriesData,
+                                colors: colorsData,
+                                labels: labelsData,
                                 totalLabel: '{{ __("Total") }}',
                                 noData: '{{ __("Sin gastos este mes") }}'
                             })
                         })
+                    "
+                    x-effect="
+                        seriesData = @js(collect($categoryDistribution)->pluck('percentage')->toArray());
+                        colorsData = @js(collect($categoryDistribution)->pluck('color')->toArray());
+                        labelsData = @js(collect($categoryDistribution)->pluck('name')->toArray());
+                        window.updateDonutChart && window.updateDonutChart({ series: seriesData })
                     "
                     wire:ignore
                 >

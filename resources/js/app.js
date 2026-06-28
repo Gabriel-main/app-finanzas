@@ -1,8 +1,10 @@
 import './animacion.js'
-import { initBarChart, initDonutChart, onLivewireUpdate } from './dashboard-charts.js'
+import { initBarChart, initDonutChart, updateBarChart, updateDonutChart, onLivewireUpdate } from './dashboard-charts.js'
 
 window.initBarChart = initBarChart
 window.initDonutChart = initDonutChart
+window.updateBarChart = updateBarChart
+window.updateDonutChart = updateDonutChart
 
 function qs(sel) {
     return document.querySelector(sel)

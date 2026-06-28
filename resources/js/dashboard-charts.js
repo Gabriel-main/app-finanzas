@@ -30,6 +30,11 @@ export function initBarChart(selector, data) {
     const el = document.querySelector(selector)
     if (!el) return
 
+    if (charts.bar) {
+        charts.bar.destroy()
+        charts.bar = null
+    }
+
     const options = {
         series: [
             { name: data.labels.income, data: data.income },
@@ -101,6 +106,11 @@ export function initDonutChart(selector, data) {
     const el = document.querySelector(selector)
     if (!el) return
 
+    if (charts.donut) {
+        charts.donut.destroy()
+        charts.donut = null
+    }
+
     const options = {
         series: data.series,
         chart: {
@@ -159,7 +169,22 @@ export function initDonutChart(selector, data) {
     charts.donut.render()
 }
 
-function updateCharts() {
+export function updateBarChart(data) {
+    if (charts.bar) {
+        charts.bar.updateSeries([
+            { name: data.labels.income, data: data.income },
+            { name: data.labels.expense, data: data.expense }
+        ])
+    }
+}
+
+export function updateDonutChart(data) {
+    if (charts.donut) {
+        charts.donut.updateSeries(data.series)
+    }
+}
+
+function updateChartsTheme() {
     if (charts.bar) {
         charts.bar.updateOptions({
             xaxis: { labels: { style: { colors: textColor() } } },
@@ -190,7 +215,7 @@ function updateCharts() {
 }
 
 function setupDarkModeObserver() {
-    const observer = new MutationObserver(updateCharts)
+    const observer = new MutationObserver(updateChartsTheme)
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
 }
 
