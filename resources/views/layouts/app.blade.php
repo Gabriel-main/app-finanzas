@@ -125,12 +125,17 @@
                     <button
                         type="button"
                         onclick="window.toggleSidebar()"
-                        class="inline-flex items-center justify-center w-9 h-9 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors duration-150"
+                        class="hidden lg:inline-flex items-center justify-center w-9 h-9 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors duration-150"
                     >
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                         </svg>
                     </button>
+                    <a href="{{ route('dashboard') }}" wire:navigate class="lg:hidden flex items-center gap-2">
+                        <x-application-logo class="h-7 w-7" style="color: var(--color-primary)" />
+                        <span class="font-bold text-base text-gray-800 dark:text-white">{{ $appName }}</span>
+                    </a>
+                    <div class="flex-1 lg:flex-none"></div>
                     <x-theme-toggle />
                 </div>
 

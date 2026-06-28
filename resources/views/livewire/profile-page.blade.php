@@ -129,6 +129,35 @@
                     </div>
                 </form>
             </div>
+
+            {{-- Theme Toggle (Mobile Only) --}}
+            <div class="lg:hidden rounded-2xl bg-white dark:bg-gray-800 p-6 shadow-sm border" style="border-color: var(--color-border)">
+                <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">{{ __('Apariencia') }}</h4>
+                <div class="flex items-center justify-between" x-data="{ isDark: document.documentElement.classList.contains('dark') }">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700">
+                            <svg class="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21.752 15.002A9.72 9.72 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-900 dark:text-white">{{ __('Modo Oscuro') }}</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">{{ __('Cambia entre tema claro y oscuro') }}</p>
+                        </div>
+                    </div>
+                    <button
+                        type="button"
+                        x-on:click="window.toggleTheme(); isDark = document.documentElement.classList.contains('dark')"
+                        class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2"
+                        :class="isDark ? 'bg-indigo-600 focus:ring-indigo-500' : 'bg-gray-200 focus:ring-gray-400'"
+                    >
+                        <span
+                            class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200 shadow-sm"
+                            :class="isDark ? 'translate-x-6' : 'translate-x-1'"
+                        ></span>
+                    </button>
+                </div>
+            </div>
         </div>
 
         {{-- ═══════════ TAB: Accounts ═══════════ --}}
