@@ -1,6 +1,6 @@
 ---
-name: gwyn
-description: Agente principal de Arquitectura Limpia
+name: gwyneve
+description: ' Agente principal de Arquitectura Limpia'
 disable-model-invocation: false
 ---
 

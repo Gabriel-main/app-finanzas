@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Http\Requests\StoreAccountRequest;
 use App\Models\Categories;
 use App\Services\CategoryService;
 use App\Services\TransactionService;
@@ -15,34 +16,60 @@ class RegisterTransaction extends Component
     public string $amount = '';
     public string $category = '';
     public string $date = '';
+    public string $accountId = '';
 
     public bool $showCategoryForm = false;
     public string $newCategoryName = '';
     public string $newCategoryColor = '#6366f1';
 
+    public bool $showAccountForm = false;
+    public string $newAccountName = '';
+    public string $currencyId = '';
+
     /** @var \Illuminate\Database\Eloquent\Collection */
     public $categories;
+
+    /** @var \Illuminate\Database\Eloquent\Collection */
+    public $accounts;
+
+    /** @var \Illuminate\Database\Eloquent\Collection */
+    public $currencies;
 
     public function mount(): void
     {
         $this->ensureDefaultAccount();
         $this->date = now()->format('Y-m-d');
         $this->loadCategories();
+        $this->loadAccounts();
+        $this->loadCurrencies();
+    }
+
+    private function loadAccounts(): void
+    {
+        $this->accounts = auth()->user()->accounts()->with('currency')->get();
+
+        if (! $this->accountId && $this->accounts->isNotEmpty()) {
+            $this->accountId = (string) $this->accounts->first()->id;
+        }
+    }
+
+    private function loadCurrencies(): void
+    {
+        $this->currencies = \App\Models\Currencies::all();
     }
 
     private function ensureDefaultAccount(): void
     {
         $user = auth()->user();
         if ($user->accounts()->count() === 0) {
-            $defaultCurrency = \App\Models\Currencies::firstOrCreate(
-                ['name' => 'Dólar'],
-                ['symbol' => '$']
-            );
-            $user->accounts()->create([
-                'currency_id' => $defaultCurrency->id,
-                'name' => 'Cuenta Principal',
-                'balance' => 0,
-            ]);
+            $defaultCurrency = \App\Models\Currencies::where('name', 'Dólar')->first();
+            if ($defaultCurrency) {
+                $user->accounts()->create([
+                    'currency_id' => $defaultCurrency->id,
+                    'name' => 'Cuenta Principal',
+                    'balance' => 0,
+                ]);
+            }
         }
     }
 
@@ -59,6 +86,34 @@ class RegisterTransaction extends Component
         $this->newCategoryName = '';
         $this->newCategoryColor = '#6366f1';
         $this->resetValidation();
+    }
+
+    public function toggleAccountForm(): void
+    {
+        $this->showAccountForm = ! $this->showAccountForm;
+        $this->newAccountName = '';
+        $this->currencyId = '';
+        $this->resetValidation();
+    }
+
+    public function createAccount(): void
+    {
+        $validated = $this->validate(new StoreAccountRequest());
+
+        $account = auth()->user()->accounts()->create([
+            'currency_id' => (int) $validated['currencyId'],
+            'name' => $validated['newAccountName'],
+            'balance' => 0,
+        ]);
+
+        $this->accountId = (string) $account->id;
+        $this->showAccountForm = false;
+        $this->newAccountName = '';
+        $this->currencyId = '';
+        $this->resetValidation();
+
+        $this->loadAccounts();
+        $this->dispatch('accounts-updated');
     }
 
     public function createCategory(): void
@@ -104,20 +159,14 @@ class RegisterTransaction extends Component
             'amount' => ['required', 'numeric', 'min:0.01'],
             'category' => ['required', 'exists:categories,id'],
             'date' => ['required', 'date'],
+            'accountId' => ['required', 'exists:accounts,id'],
         ]);
 
         $type = $this->tab === 'income' ? 'income' : 'expense';
 
-        $account = auth()->user()->accounts()->first();
-
-        if (! $account) {
-            $this->dispatch('show-toast', message: 'No tienes una cuenta configurada.', type: 'error');
-            return;
-        }
-
         try {
             app(TransactionService::class)->createTransaction([
-                'account_id' => $account->id,
+                'account_id' => (int) $this->accountId,
                 'category_id' => (int) $this->category,
                 'amount' => (float) $this->amount,
                 'type' => $type,

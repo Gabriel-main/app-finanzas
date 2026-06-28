@@ -1,11 +1,17 @@
 <div
     x-data="{
         dropdownOpen: false,
+        accountDropdownOpen: false,
         search: '',
         categoryId: @entangle('category').live,
+        accountId: @entangle('accountId').live,
         categories: @js($categories->map(fn($c) => ['id' => $c->id, 'name' => $c->name, 'color' => $c->color])),
+        accounts: @js($accounts->map(fn($a) => ['id' => $a->id, 'name' => $a->name, 'symbol' => $a->currency->symbol ?? '$', 'currency' => $a->currency->name ?? 'Moneda'])),
         get selected() {
             return this.categories.find(c => c.id == this.categoryId)
+        },
+        get selectedAccount() {
+            return this.accounts.find(a => a.id == this.accountId)
         },
         get filtered() {
             if (!this.search) return this.categories
@@ -16,12 +22,21 @@
             this.dropdownOpen = false
             this.search = ''
         },
+        selectAccount(id) {
+            this.accountId = id
+            this.accountDropdownOpen = false
+        },
         clearSelection() {
             this.categoryId = ''
             this.search = ''
         }
     }"
     x-on:categories-updated.window="categories = $event.detail.categories"
+    x-on:accounts-updated.window="
+        $wire.get('accounts').then(res => {
+            accounts = res.map(a => ({id: a.id, name: a.name, symbol: a.currency?.symbol ?? '$', currency: a.currency?.name ?? 'Moneda'}))
+        })
+    "
     x-init="
         $watch('$wire.categories', (val) => {
             categories = val.map(c => ({id: c.id, name: c.name, color: c.color}))
@@ -57,37 +72,48 @@
     <div
         x-show="$wire.open"
         x-transition:enter="transition ease-out duration-300"
-        x-transition:enter-start="opacity-0 scale-90 translate-y-4"
+        x-transition:enter-start="opacity-0 scale-95 translate-y-4"
         x-transition:enter-end="opacity-100 scale-100 translate-y-0"
         x-transition:leave="transition ease-in duration-200"
         x-transition:leave-start="opacity-100 scale-100 translate-y-0"
-        x-transition:leave-end="opacity-0 scale-90 translate-y-4"
-        class="fixed z-50 inset-0 m-auto w-full max-w-md h-fit max-h-[90vh] overflow-y-auto bg-white dark:bg-gray-800 rounded-2xl shadow-2xl"
+        x-transition:leave-end="opacity-0 scale-95 translate-y-4"
+        class="fixed z-50 inset-0 m-auto w-[calc(100%-2rem)] sm:w-full max-w-md h-fit max-h-[90vh] overflow-y-auto modal-scroll bg-white dark:bg-gray-800 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-700/50"
     >
-        <div class="px-6 py-6">
-            {{-- Header --}}
-            <div class="flex items-center justify-between mb-6">
-                <h3 class="text-lg font-bold text-gray-900 dark:text-white">
-                    {{ __('Registrar') }}
-                </h3>
-                <button type="button" x-on:click="$wire.set('open', false)" class="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-150">
+        {{-- Header --}}
+        <div class="relative px-6 pt-6 pb-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white">
+                        {{ __('Nueva Transacción') }}
+                    </h3>
+                    <p class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
+                        {{ __('Registra un ingreso o gasto') }}
+                    </p>
+                </div>
+                <button
+                    type="button"
+                    x-on:click="$wire.set('open', false)"
+                    class="p-2 rounded-xl text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-150"
+                >
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
             </div>
+        </div>
 
-            {{-- Tabs --}}
-            <div class="flex bg-gray-100 dark:bg-gray-700/50 rounded-xl p-1 mb-6">
+        {{-- Tabs --}}
+        <div class="px-6 mb-5">
+            <div class="flex bg-gray-100 dark:bg-gray-700/50 rounded-2xl p-1 gap-1">
                 <button
                     type="button"
                     wire:click="toggleTab('expense')"
-                    class="flex-1 py-2.5 text-sm font-medium rounded-lg transition-all duration-150"
-                    :class="$wire.tab === 'expense' ? 'bg-white dark:bg-gray-700 text-red-600 dark:text-red-400 shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'"
+                    class="flex-1 py-3 text-sm font-semibold rounded-xl transition-all duration-200 relative"
+                    :class="$wire.tab === 'expense' ? 'bg-white dark:bg-gray-700 text-red-500 dark:text-red-400 shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'"
                 >
-                    <span class="flex items-center justify-center gap-1.5">
+                    <span class="flex items-center justify-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
                         </svg>
                         {{ __('Gasto') }}
                     </span>
@@ -95,221 +121,375 @@
                 <button
                     type="button"
                     wire:click="toggleTab('income')"
-                    class="flex-1 py-2.5 text-sm font-medium rounded-lg transition-all duration-150"
-                    :class="$wire.tab === 'income' ? 'bg-white dark:bg-gray-700 text-emerald-600 dark:text-emerald-400 shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'"
+                    class="flex-1 py-3 text-sm font-semibold rounded-xl transition-all duration-200 relative"
+                    :class="$wire.tab === 'income' ? 'bg-white dark:bg-gray-700 text-emerald-500 dark:text-emerald-400 shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'"
                 >
-                    <span class="flex items-center justify-center gap-1.5">
+                    <span class="flex items-center justify-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                         {{ __('Ingreso') }}
                     </span>
                 </button>
             </div>
+        </div>
 
-            {{-- Form --}}
-            <form wire:submit="submit" class="space-y-4">
-                {{-- Description --}}
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                        {{ __('Descripción') }}
-                    </label>
+        {{-- Form --}}
+        <form wire:submit="submit" class="px-6 pb-6 space-y-5">
+            {{-- Amount (Prominent) --}}
+            <div class="text-center py-4">
+                <label class="block text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2">
+                    {{ __('Monto') }}
+                </label>
+                <div class="relative inline-flex items-center">
+                    <span class="text-3xl font-light text-gray-300 dark:text-gray-600 mr-1" x-text="selectedAccount?.symbol || '$'"></span>
                     <input
-                        type="text"
-                        wire:model="description"
-                        placeholder="{{ __('Ej: Supermercado, Renta...') }}"
-                        class="w-full px-4 py-2.5 text-sm rounded-lg border bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-400 focus:ring-2 focus:border-transparent"
-                        style="border-color: var(--color-border); --tw-ring-color: var(--color-primary)"
+                        type="number"
+                        step="0.01"
+                        wire:model="amount"
+                        placeholder="0.00"
+                        class="text-4xl font-bold text-center bg-transparent border-0 focus:outline-none focus:ring-0 w-full max-w-[12rem] text-gray-900 dark:text-white placeholder-gray-200 dark:placeholder-gray-700"
                     >
                 </div>
+                <div class="w-32 h-0.5 mx-auto mt-2 rounded-full" style="background-color: var(--color-primary-medium)"></div>
+                @error('amount')
+                    <p class="text-xs text-red-500 mt-2">{{ $message }}</p>
+                @enderror
+            </div>
 
-                {{-- Amount --}}
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                        {{ __('Monto') }}
+            {{-- Account / Currency --}}
+            <div>
+                <div class="flex items-center justify-between mb-2">
+                    <label class="text-xs font-medium text-gray-500 dark:text-gray-400">
+                        {{ __('Cuenta') }}
                     </label>
-                    <div class="relative">
-                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">$</span>
-                        <input
-                            type="number"
-                            step="0.01"
-                            wire:model="amount"
-                            placeholder="0.00"
-                            class="w-full pl-8 pr-4 py-2.5 text-sm rounded-lg border bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-400 focus:ring-2 focus:border-transparent"
-                            style="border-color: var(--color-border); --tw-ring-color: var(--color-primary)"
-                        >
+                    <button
+                        type="button"
+                        wire:click="toggleAccountForm"
+                        class="text-xs font-medium transition-colors duration-150"
+                        style="color: var(--color-primary)"
+                    >
+                        <span x-text="$wire.showAccountForm ? '{{ __("Cancelar") }}' : '+ {{ __("Nueva") }}'"></span>
+                    </button>
+                </div>
+
+                {{-- Account Dropdown --}}
+                <div x-show="!$wire.showAccountForm" class="relative" x-data>
+                    <button
+                        type="button"
+                        x-on:click="accountDropdownOpen = !accountDropdownOpen"
+                        class="w-full flex items-center justify-between px-4 py-3 text-sm rounded-xl bg-gray-50 dark:bg-gray-700/50 text-left focus:ring-2 transition-all duration-150"
+                        :class="accountDropdownOpen ? 'ring-2 bg-white dark:bg-gray-700' : 'hover:bg-gray-100 dark:hover:bg-gray-700'"
+                        :style="accountDropdownOpen ? '--tw-ring-color: var(--color-primary)' : ''"
+                    >
+                        <span class="flex items-center gap-2.5" x-show="selectedAccount">
+                            <span class="flex items-center justify-center w-7 h-7 rounded-lg text-xs font-bold text-white" style="background-color: var(--color-primary)">
+                                <span x-text="selectedAccount?.symbol"></span>
+                            </span>
+                            <div class="flex flex-col">
+                                <span class="text-gray-900 dark:text-gray-200 font-medium" x-text="selectedAccount?.name"></span>
+                                <span class="text-[10px] text-gray-400 dark:text-gray-500" x-text="selectedAccount?.currency"></span>
+                            </div>
+                        </span>
+                        <span x-show="!selectedAccount" class="text-gray-400 dark:text-gray-500">{{ __('Seleccionar cuenta') }}</span>
+                        <svg class="w-4 h-4 text-gray-400 transition-transform duration-200" :class="{ 'rotate-180': accountDropdownOpen }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                        </svg>
+                    </button>
+                    <div
+                        x-show="accountDropdownOpen"
+                        x-transition:enter="transition ease-out duration-150"
+                        x-transition:enter-start="opacity-0 scale-95 -translate-y-1"
+                        x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                        x-transition:leave="transition ease-in duration-100"
+                        x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+                        x-transition:leave-end="opacity-0 scale-95 -translate-y-1"
+                        x-on:click.away="accountDropdownOpen = false"
+                        class="absolute z-20 mt-2 w-full rounded-xl bg-white dark:bg-gray-800 shadow-xl overflow-hidden ring-1 ring-black/5"
+                    >
+                        <div class="py-1">
+                            <template x-for="acc in accounts" :key="acc.id">
+                                <button
+                                    type="button"
+                                    x-on:click="selectAccount(acc.id)"
+                                    class="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-left transition-all duration-100"
+                                    :class="accountId == acc.id ? 'bg-gray-50 dark:bg-gray-700/50' : 'hover:bg-gray-50 dark:hover:bg-gray-700/30'"
+                                >
+                                    <span class="flex items-center justify-center w-7 h-7 rounded-lg text-xs font-bold text-white shrink-0" style="background-color: var(--color-primary)">
+                                        <span x-text="acc.symbol"></span>
+                                    </span>
+                                    <div class="flex flex-col flex-1 min-w-0">
+                                        <span x-text="acc.name" class="truncate" :class="accountId == acc.id ? 'font-medium text-gray-900 dark:text-gray-100' : 'text-gray-700 dark:text-gray-300'"></span>
+                                        <span x-text="acc.currency" class="text-[10px] text-gray-400 dark:text-gray-500"></span>
+                                    </div>
+                                    <svg x-show="accountId == acc.id" class="w-4 h-4 shrink-0" style="color: var(--color-primary)" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </button>
+                            </template>
+                        </div>
                     </div>
                 </div>
 
-                {{-- Category --}}
-                <div>
-                    <div class="flex items-center justify-between mb-1.5">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                            {{ __('Categoría') }}
-                        </label>
-                        <button
-                            type="button"
-                            wire:click="toggleCategoryForm"
-                            class="text-xs font-medium transition-colors duration-150"
-                            style="color: var(--color-primary)"
+                {{-- New Account Form --}}
+                <div
+                    x-show="$wire.showAccountForm"
+                    x-transition:enter="transition ease-out duration-200"
+                    x-transition:enter-start="opacity-0 -translate-y-2"
+                    x-transition:enter-end="opacity-100 translate-y-0"
+                    class="space-y-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-700/30 ring-1 ring-black/5"
+                >
+                    <div>
+                        <input
+                            type="text"
+                            wire:model="newAccountName"
+                            placeholder="{{ __('Nombre de la cuenta') }}"
+                            class="w-full px-4 py-2.5 text-sm rounded-lg border-0 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-400 focus:ring-2 transition-all duration-150"
+                            style="--tw-ring-color: var(--color-primary)"
                         >
-                            <span x-text="$wire.showCategoryForm ? '{{ __("Cancelar") }}' : '+ {{ __("Crear categoría") }}'"></span>
-                        </button>
+                        @error('newAccountName')
+                            <p class="text-xs text-red-500 mt-1.5">{{ $message }}</p>
+                        @enderror
                     </div>
-
-                    {{-- Custom Dropdown --}}
-                    <div x-show="!$wire.showCategoryForm" class="relative">
-                        {{-- Trigger --}}
-                        <button
-                            type="button"
-                            x-on:click="dropdownOpen = !dropdownOpen"
-                            class="w-full flex items-center justify-between px-4 py-2.5 text-sm rounded-lg border bg-white dark:bg-gray-700 text-left focus:ring-2 focus:border-transparent transition-colors duration-150"
-                            :class="dropdownOpen ? 'border-transparent' : ''"
-                            :style="dropdownOpen ? 'border-color: var(--color-primary); ring-color: var(--color-primary)' : 'border-color: var(--color-border)'"
+                    <div>
+                        <select
+                            wire:model="currencyId"
+                            class="w-full px-4 py-2.5 text-sm rounded-lg border-0 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 transition-all duration-150"
+                            style="--tw-ring-color: var(--color-primary)"
                         >
-                            <span class="flex items-center gap-2" x-show="selected">
-                                <span class="w-3 h-3 rounded-full shrink-0" :style="'background-color:' + selected?.color"></span>
-                                <span class="text-gray-900 dark:text-gray-200" x-text="selected?.name"></span>
-                            </span>
-                            <span x-show="!selected" class="text-gray-400 dark:text-gray-500">{{ __('Seleccionar categoría') }}</span>
-                            <svg class="w-4 h-4 text-gray-400 transition-transform duration-150" :class="{ 'rotate-180': dropdownOpen }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                            </svg>
-                        </button>
+                            <option value="">{{ __('Seleccionar moneda') }}</option>
+                            @foreach($currencies as $currency)
+                                <option value="{{ $currency->id }}">{{ $currency->symbol }} {{ $currency->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('currencyId')
+                            <p class="text-xs text-red-500 mt-1.5">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <button
+                        type="button"
+                        wire:click="createAccount"
+                        class="w-full px-4 py-2.5 text-xs font-semibold rounded-lg text-white transition-all duration-150 hover:shadow-md"
+                        style="background-color: var(--color-primary)"
+                    >
+                        {{ __('Crear cuenta') }}
+                    </button>
+                </div>
 
-                        {{-- Dropdown --}}
-                        <div
-                            x-show="dropdownOpen"
-                            x-transition:enter="transition ease-out duration-100"
-                            x-transition:enter-start="opacity-0 scale-95"
-                            x-transition:enter-end="opacity-100 scale-100"
-                            x-transition:leave="transition ease-in duration-75"
-                            x-transition:leave-start="opacity-100 scale-100"
-                            x-transition:leave-end="opacity-0 scale-95"
-                            x-on:click.away="dropdownOpen = false"
-                            class="absolute z-20 mt-1 w-full rounded-lg bg-white dark:bg-gray-800 shadow-lg overflow-hidden"
-                            style="border: 1px solid var(--color-border)"
-                        >
-                            {{-- Search --}}
-                            <div class="p-2" style="border-bottom: 1px solid var(--color-border)">
-                                <div class="relative">
-                                    <svg class="w-4 h-4 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                    </svg>
-                                    <input
-                                        type="text"
-                                        x-model="search"
-                                        x-ref="searchInput"
-                                        placeholder="{{ __('Buscar categoría...') }}"
-                                        x-on:click.stop
-                                        class="w-full pl-8 pr-3 py-2 text-sm rounded-md border bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-400 focus:ring-1 focus:border-transparent"
-                                        style="border-color: var(--color-border); --tw-ring-color: var(--color-primary)"
-                                    >
-                                </div>
+                @error('accountId')
+                    <p class="text-xs text-red-500 mt-1.5">{{ $message }}</p>
+                @enderror
+            </div>
+
+            {{-- Description --}}
+            <div>
+                <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">
+                    {{ __('Descripción') }}
+                </label>
+                <input
+                    type="text"
+                    wire:model="description"
+                    placeholder="{{ __('Ej: Supermercado, Renta...') }}"
+                    class="w-full px-4 py-3 text-sm rounded-xl border-0 bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-gray-200 placeholder-gray-400 focus:ring-2 focus:bg-white dark:focus:bg-gray-700 transition-all duration-150"
+                    style="--tw-ring-color: var(--color-primary)"
+                >
+                @error('description')
+                    <p class="text-xs text-red-500 mt-1.5">{{ $message }}</p>
+                @enderror
+            </div>
+
+            {{-- Category --}}
+            <div>
+                <div class="flex items-center justify-between mb-2">
+                    <label class="text-xs font-medium text-gray-500 dark:text-gray-400">
+                        {{ __('Categoría') }}
+                    </label>
+                    <button
+                        type="button"
+                        wire:click="toggleCategoryForm"
+                        class="text-xs font-medium transition-colors duration-150"
+                        style="color: var(--color-primary)"
+                    >
+                        <span x-text="$wire.showCategoryForm ? '{{ __("Cancelar") }}' : '+ {{ __("Nueva") }}'"></span>
+                    </button>
+                </div>
+
+                {{-- Custom Dropdown --}}
+                <div x-show="!$wire.showCategoryForm" class="relative">
+                    {{-- Trigger --}}
+                    <button
+                        type="button"
+                        x-on:click="dropdownOpen = !dropdownOpen"
+                        class="w-full flex items-center justify-between px-4 py-3 text-sm rounded-xl bg-gray-50 dark:bg-gray-700/50 text-left focus:ring-2 transition-all duration-150"
+                        :class="dropdownOpen ? 'ring-2 bg-white dark:bg-gray-700' : 'hover:bg-gray-100 dark:hover:bg-gray-700'"
+                        :style="dropdownOpen ? '--tw-ring-color: var(--color-primary)' : ''"
+                    >
+                        <span class="flex items-center gap-2.5" x-show="selected">
+                            <span class="w-3 h-3 rounded-full shrink-0 ring-2 ring-white dark:ring-gray-800 shadow-sm" :style="'background-color:' + selected?.color"></span>
+                            <span class="text-gray-900 dark:text-gray-200 font-medium" x-text="selected?.name"></span>
+                        </span>
+                        <span x-show="!selected" class="text-gray-400 dark:text-gray-500">{{ __('Seleccionar categoría') }}</span>
+                        <svg class="w-4 h-4 text-gray-400 transition-transform duration-200" :class="{ 'rotate-180': dropdownOpen }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                        </svg>
+                    </button>
+
+                    {{-- Dropdown --}}
+                    <div
+                        x-show="dropdownOpen"
+                        x-transition:enter="transition ease-out duration-150"
+                        x-transition:enter-start="opacity-0 scale-95 -translate-y-1"
+                        x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                        x-transition:leave="transition ease-in duration-100"
+                        x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+                        x-transition:leave-end="opacity-0 scale-95 -translate-y-1"
+                        x-on:click.away="dropdownOpen = false"
+                        class="absolute z-20 mt-2 w-full rounded-xl bg-white dark:bg-gray-800 shadow-xl overflow-hidden ring-1 ring-black/5"
+                    >
+                        {{-- Search --}}
+                        <div class="p-2.5 border-b border-gray-100 dark:border-gray-700/50">
+                            <div class="relative">
+                                <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                                <input
+                                    type="text"
+                                    x-model="search"
+                                    x-ref="searchInput"
+                                    placeholder="{{ __('Buscar...') }}"
+                                    x-on:click.stop
+                                    class="w-full pl-9 pr-3 py-2 text-sm rounded-lg bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-gray-200 placeholder-gray-400 focus:ring-1 border-0"
+                                    style="--tw-ring-color: var(--color-primary)"
+                                >
                             </div>
+                        </div>
 
-                            {{-- Category List --}}
-                            <div class="max-h-48 overflow-y-auto">
-                                <template x-for="cat in filtered" :key="cat.id">
-                                    <button
-                                        type="button"
-                                        x-on:click="select(cat.id)"
-                                        class="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-left hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-100"
-                                        :class="categoryId == cat.id ? 'text-gray-900 dark:text-gray-200' : 'text-gray-700 dark:text-gray-300'"
-                                        :style="categoryId == cat.id ? 'background-color: var(--color-primary-light)' : ''"
-                                    >
-                                        <span class="w-3 h-3 rounded-full shrink-0" :style="'background-color:' + cat.color"></span>
-                                        <span x-text="cat.name" class="flex-1"></span>
-                                        <svg x-show="categoryId == cat.id" class="w-4 h-4" style="color: var(--color-primary)" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                        </svg>
-                                    </button>
-                                </template>
-
-                                {{-- Empty state --}}
-                                <div x-show="filtered.length === 0" class="px-3 py-4 text-center">
-                                    <p class="text-sm text-gray-400 dark:text-gray-500">{{ __('No se encontraron categorías') }}</p>
-                                </div>
-                            </div>
-
-                            {{-- Create button --}}
-                            <div class="p-2" style="border-top: 1px solid var(--color-border)">
+                        {{-- Category List --}}
+                        <div class="max-h-52 overflow-y-auto py-1">
+                            <template x-for="cat in filtered" :key="cat.id">
                                 <button
                                     type="button"
-                                    x-on:click="dropdownOpen = false; $wire.toggleCategoryForm()"
-                                    class="w-full flex items-center gap-2 px-3 py-2 text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-md transition-colors duration-150"
-                                    style="color: var(--color-primary)"
+                                    x-on:click="select(cat.id)"
+                                    class="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-left transition-all duration-100"
+                                    :class="categoryId == cat.id ? 'bg-gray-50 dark:bg-gray-700/50' : 'hover:bg-gray-50 dark:hover:bg-gray-700/30'"
                                 >
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.5v15m7.5-7.5h-15" />
+                                    <span class="w-2.5 h-2.5 rounded-full shrink-0" :style="'background-color:' + cat.color"></span>
+                                    <span x-text="cat.name" class="flex-1" :class="categoryId == cat.id ? 'font-medium text-gray-900 dark:text-gray-100' : 'text-gray-700 dark:text-gray-300'"></span>
+                                    <svg x-show="categoryId == cat.id" class="w-4 h-4 shrink-0" style="color: var(--color-primary)" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
                                     </svg>
-                                    {{ __('Crear nueva categoría') }}
                                 </button>
+                            </template>
+
+                            {{-- Empty state --}}
+                            <div x-show="filtered.length === 0" class="px-3 py-6 text-center">
+                                <svg class="w-8 h-8 mx-auto text-gray-300 dark:text-gray-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                                <p class="text-sm text-gray-400 dark:text-gray-500">{{ __('Sin resultados') }}</p>
                             </div>
                         </div>
-                    </div>
 
-                    {{-- New Category Form --}}
-                    <div x-show="$wire.showCategoryForm" x-transition class="space-y-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50" style="border: 1px solid var(--color-border)">
-                        <div>
-                            <input
-                                type="text"
-                                wire:model="newCategoryName"
-                                placeholder="{{ __('Nombre de la categoría') }}"
-                                class="w-full px-4 py-2.5 text-sm rounded-lg border bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-400 focus:ring-2 focus:border-transparent"
-                                style="border-color: var(--color-border); --tw-ring-color: var(--color-primary)"
-                            >
-                            @error('newCategoryName')
-                                <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <label class="text-xs text-gray-500 dark:text-gray-400">{{ __('Color') }}</label>
-                            <input
-                                type="color"
-                                wire:model="newCategoryColor"
-                                class="w-8 h-8 rounded cursor-pointer border-0 p-0"
-                            >
+                        {{-- Create button --}}
+                        <div class="p-2 border-t border-gray-100 dark:border-gray-700/50">
                             <button
                                 type="button"
-                                wire:click="createCategory"
-                                class="px-3 py-1.5 text-xs font-medium rounded-lg text-white transition-colors duration-150"
-                                style="background-color: var(--color-primary)"
+                                x-on:click="dropdownOpen = false; $wire.toggleCategoryForm()"
+                                class="w-full flex items-center gap-2 px-3 py-2.5 text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700/30 rounded-lg transition-colors duration-150"
+                                style="color: var(--color-primary)"
                             >
-                                {{ __('Crear') }}
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.5v15m7.5-7.5h-15" />
+                                </svg>
+                                {{ __('Crear nueva categoría') }}
                             </button>
                         </div>
                     </div>
                 </div>
 
-                {{-- Date --}}
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                        {{ __('Fecha') }}
-                    </label>
-                    <input
-                        type="date"
-                        wire:model="date"
-                        class="w-full px-4 py-2.5 text-sm rounded-lg border bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:border-transparent"
-                        style="border-color: var(--color-border); --tw-ring-color: var(--color-primary)"
-                    >
-                </div>
-
-                {{-- Submit --}}
-                <button
-                    type="submit"
-                    wire:loading.attr="disabled"
-                    wire:loading.class="opacity-50 cursor-not-allowed"
-                    class="w-full py-2.5 text-sm font-semibold rounded-lg text-white transition-all duration-150 hover:opacity-90"
-                    :style="$wire.tab === 'expense' ? 'background-color: #ef4444' : 'background-color: #10b981'"
+                {{-- New Category Form --}}
+                <div
+                    x-show="$wire.showCategoryForm"
+                    x-transition:enter="transition ease-out duration-200"
+                    x-transition:enter-start="opacity-0 -translate-y-2"
+                    x-transition:enter-end="opacity-100 translate-y-0"
+                    class="space-y-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-700/30 ring-1 ring-black/5"
                 >
-                    <span wire:loading.remove wire:target="submit" x-text="$wire.tab === 'expense' ? '{{ __("Registrar Gasto") }}' : '{{ __("Registrar Ingreso") }}'"></span>
-                    <span wire:loading wire:target="submit" class="flex items-center justify-center gap-2">
-                        <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" class="opacity-25"></circle><path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" class="opacity-75"></path></svg>
-                        {{ __('Guardando...') }}
-                    </span>
-                </button>
-            </form>
-        </div>
+                    <div>
+                        <input
+                            type="text"
+                            wire:model="newCategoryName"
+                            placeholder="{{ __('Nombre de la categoría') }}"
+                            class="w-full px-4 py-2.5 text-sm rounded-lg border-0 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-400 focus:ring-2 transition-all duration-150"
+                            style="--tw-ring-color: var(--color-primary)"
+                        >
+                        @error('newCategoryName')
+                            <p class="text-xs text-red-500 mt-1.5">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="flex items-center gap-2">
+                            <input
+                                type="color"
+                                wire:model="newCategoryColor"
+                                class="w-8 h-8 rounded-lg cursor-pointer border-2 border-white dark:border-gray-800 shadow-sm"
+                            >
+                            <span class="text-xs text-gray-500 dark:text-gray-400">{{ __('Color') }}</span>
+                        </div>
+                        <div class="flex-1"></div>
+                        <button
+                            type="button"
+                            wire:click="createCategory"
+                            class="px-4 py-2 text-xs font-semibold rounded-lg text-white transition-all duration-150 hover:shadow-md"
+                            style="background-color: var(--color-primary)"
+                        >
+                            {{ __('Crear') }}
+                        </button>
+                    </div>
+                </div>
+                @error('category')
+                    <p class="text-xs text-red-500 mt-1.5">{{ $message }}</p>
+                @enderror
+            </div>
+
+            {{-- Date --}}
+            <div>
+                <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">
+                    {{ __('Fecha') }}
+                </label>
+                <input
+                    type="date"
+                    wire:model="date"
+                    class="w-full px-4 py-3 text-sm rounded-xl border-0 bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-gray-200 focus:ring-2 focus:bg-white dark:focus:bg-gray-700 transition-all duration-150"
+                    style="--tw-ring-color: var(--color-primary)"
+                >
+                @error('date')
+                    <p class="text-xs text-red-500 mt-1.5">{{ $message }}</p>
+                @enderror
+            </div>
+
+            {{-- Submit --}}
+            <button
+                type="submit"
+                wire:loading.attr="disabled"
+                wire:loading.class="opacity-60 cursor-not-allowed"
+                class="w-full py-3.5 text-sm font-bold rounded-xl text-white transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0"
+                :class="$wire.tab === 'expense' ? 'bg-gradient-to-r from-red-500 to-rose-500 hover:from-red-600 hover:to-rose-600' : 'bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600'"
+            >
+                <span wire:loading.remove wire:target="submit" class="flex items-center justify-center gap-2">
+                    <svg x-show="$wire.tab === 'expense'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                    </svg>
+                    <svg x-show="$wire.tab === 'income'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span x-text="$wire.tab === 'expense' ? '{{ __("Registrar Gasto") }}' : '{{ __("Registrar Ingreso") }}'"></span>
+                </span>
+                <span wire:loading wire:target="submit" class="flex items-center justify-center gap-2">
+                    <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" class="opacity-25"></circle><path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" class="opacity-75"></path></svg>
+                    {{ __('Guardando...') }}
+                </span>
+            </button>
+        </form>
     </div>
 </div>
