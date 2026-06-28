@@ -19,7 +19,14 @@
     },
     {
         "type": "title",
-        "title": "Configuración"
+        "title": "Cuenta"
+    },
+    {
+        "title": "Perfil",
+        "route": "profile",
+        "icon": "user",
+        "active": ["profile"],
+        "visible": true
     },
     {
         "title": "Personalización",
@@ -27,20 +34,5 @@
         "icon": "palette",
         "active": ["settings"],
         "visible": true
-    },
-    {
-        "title": "Ajustes",
-        "icon": "cog",
-        "active": ["profile"],
-        "visible": false,
-        "submenu": [
-            {
-                "title": "Perfil",
-                "route": "profile",
-                "icon": "user",
-                "active": ["profile"],
-                "visible": true
-            }
-        ]
     }
 ]

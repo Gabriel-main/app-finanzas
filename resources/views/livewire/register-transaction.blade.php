@@ -1,3 +1,4 @@
+{{-- @responsable @especialista-frontend --}}
 <div
     x-data="{
         dropdownOpen: false,
@@ -35,11 +36,6 @@
     x-on:accounts-updated.window="
         $wire.get('accounts').then(res => {
             accounts = res.map(a => ({id: a.id, name: a.name, symbol: a.currency?.symbol ?? '$', currency: a.currency?.name ?? 'Moneda'}))
-        })
-    "
-    x-init="
-        $watch('$wire.categories', (val) => {
-            categories = val.map(c => ({id: c.id, name: c.name, color: c.color}))
         })
     "
 >
@@ -157,24 +153,12 @@
                 @enderror
             </div>
 
-            {{-- Account / Currency --}}
+            {{-- Account --}}
             <div>
-                <div class="flex items-center justify-between mb-2">
-                    <label class="text-xs font-medium text-gray-500 dark:text-gray-400">
-                        {{ __('Cuenta') }}
-                    </label>
-                    <button
-                        type="button"
-                        wire:click="toggleAccountForm"
-                        class="text-xs font-medium transition-colors duration-150"
-                        style="color: var(--color-primary)"
-                    >
-                        <span x-text="$wire.showAccountForm ? '{{ __("Cancelar") }}' : '+ {{ __("Nueva") }}'"></span>
-                    </button>
-                </div>
-
-                {{-- Account Dropdown --}}
-                <div x-show="!$wire.showAccountForm" class="relative" x-data>
+                <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">
+                    {{ __('Cuenta') }}
+                </label>
+                <div class="relative" x-data>
                     <button
                         type="button"
                         x-on:click="accountDropdownOpen = !accountDropdownOpen"
@@ -230,52 +214,6 @@
                         </div>
                     </div>
                 </div>
-
-                {{-- New Account Form --}}
-                <div
-                    x-show="$wire.showAccountForm"
-                    x-transition:enter="transition ease-out duration-200"
-                    x-transition:enter-start="opacity-0 -translate-y-2"
-                    x-transition:enter-end="opacity-100 translate-y-0"
-                    class="space-y-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-700/30 ring-1 ring-black/5"
-                >
-                    <div>
-                        <input
-                            type="text"
-                            wire:model="newAccountName"
-                            placeholder="{{ __('Nombre de la cuenta') }}"
-                            class="w-full px-4 py-2.5 text-sm rounded-lg border-0 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-400 focus:ring-2 transition-all duration-150"
-                            style="--tw-ring-color: var(--color-primary)"
-                        >
-                        @error('newAccountName')
-                            <p class="text-xs text-red-500 mt-1.5">{{ $message }}</p>
-                        @enderror
-                    </div>
-                    <div>
-                        <select
-                            wire:model="currencyId"
-                            class="w-full px-4 py-2.5 text-sm rounded-lg border-0 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 transition-all duration-150"
-                            style="--tw-ring-color: var(--color-primary)"
-                        >
-                            <option value="">{{ __('Seleccionar moneda') }}</option>
-                            @foreach($currencies as $currency)
-                                <option value="{{ $currency->id }}">{{ $currency->symbol }} {{ $currency->name }}</option>
-                            @endforeach
-                        </select>
-                        @error('currencyId')
-                            <p class="text-xs text-red-500 mt-1.5">{{ $message }}</p>
-                        @enderror
-                    </div>
-                    <button
-                        type="button"
-                        wire:click="createAccount"
-                        class="w-full px-4 py-2.5 text-xs font-semibold rounded-lg text-white transition-all duration-150 hover:shadow-md"
-                        style="background-color: var(--color-primary)"
-                    >
-                        {{ __('Crear cuenta') }}
-                    </button>
-                </div>
-
                 @error('accountId')
                     <p class="text-xs text-red-500 mt-1.5">{{ $message }}</p>
                 @enderror
@@ -300,22 +238,12 @@
 
             {{-- Category --}}
             <div>
-                <div class="flex items-center justify-between mb-2">
-                    <label class="text-xs font-medium text-gray-500 dark:text-gray-400">
-                        {{ __('Categoría') }}
-                    </label>
-                    <button
-                        type="button"
-                        wire:click="toggleCategoryForm"
-                        class="text-xs font-medium transition-colors duration-150"
-                        style="color: var(--color-primary)"
-                    >
-                        <span x-text="$wire.showCategoryForm ? '{{ __("Cancelar") }}' : '+ {{ __("Nueva") }}'"></span>
-                    </button>
-                </div>
+                <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">
+                    {{ __('Categoría') }}
+                </label>
 
                 {{-- Custom Dropdown --}}
-                <div x-show="!$wire.showCategoryForm" class="relative">
+                <div class="relative">
                     {{-- Trigger --}}
                     <button
                         type="button"
@@ -389,62 +317,6 @@
                                 <p class="text-sm text-gray-400 dark:text-gray-500">{{ __('Sin resultados') }}</p>
                             </div>
                         </div>
-
-                        {{-- Create button --}}
-                        <div class="p-2 border-t border-gray-100 dark:border-gray-700/50">
-                            <button
-                                type="button"
-                                x-on:click="dropdownOpen = false; $wire.toggleCategoryForm()"
-                                class="w-full flex items-center gap-2 px-3 py-2.5 text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700/30 rounded-lg transition-colors duration-150"
-                                style="color: var(--color-primary)"
-                            >
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.5v15m7.5-7.5h-15" />
-                                </svg>
-                                {{ __('Crear nueva categoría') }}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- New Category Form --}}
-                <div
-                    x-show="$wire.showCategoryForm"
-                    x-transition:enter="transition ease-out duration-200"
-                    x-transition:enter-start="opacity-0 -translate-y-2"
-                    x-transition:enter-end="opacity-100 translate-y-0"
-                    class="space-y-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-700/30 ring-1 ring-black/5"
-                >
-                    <div>
-                        <input
-                            type="text"
-                            wire:model="newCategoryName"
-                            placeholder="{{ __('Nombre de la categoría') }}"
-                            class="w-full px-4 py-2.5 text-sm rounded-lg border-0 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-400 focus:ring-2 transition-all duration-150"
-                            style="--tw-ring-color: var(--color-primary)"
-                        >
-                        @error('newCategoryName')
-                            <p class="text-xs text-red-500 mt-1.5">{{ $message }}</p>
-                        @enderror
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <div class="flex items-center gap-2">
-                            <input
-                                type="color"
-                                wire:model="newCategoryColor"
-                                class="w-8 h-8 rounded-lg cursor-pointer border-2 border-white dark:border-gray-800 shadow-sm"
-                            >
-                            <span class="text-xs text-gray-500 dark:text-gray-400">{{ __('Color') }}</span>
-                        </div>
-                        <div class="flex-1"></div>
-                        <button
-                            type="button"
-                            wire:click="createCategory"
-                            class="px-4 py-2 text-xs font-semibold rounded-lg text-white transition-all duration-150 hover:shadow-md"
-                            style="background-color: var(--color-primary)"
-                        >
-                            {{ __('Crear') }}
-                        </button>
                     </div>
                 </div>
                 @error('category')
