@@ -22,27 +22,29 @@ new #[Layout('layouts.guest')] class extends Component
 }; ?>
 
 <div>
+    {{-- Header --}}
     <div class="text-center mb-8">
         <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
-            {{ __('Welcome back') }}
+            {{ __('Bienvenido de nuevo') }}
         </h1>
-        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-            {{ __('Sign in to your account to continue') }}
+        <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+            {{ __('Inicia sesión en tu cuenta para continuar') }}
         </p>
     </div>
 
     <x-auth-session-status class="mb-6" :status="session('status')" />
 
+    {{-- Form --}}
     <form wire:submit="login" class="space-y-5">
         <x-input-group
-            label="Email"
+            label="Correo electrónico"
             id="email"
             type="email"
             model="form.email"
             autocomplete="username"
             required
             autofocus
-            placeholder="you@example.com"
+            placeholder="tu@correo.com"
             :error="$errors->get('form.email')"
         >
             <x-slot:icon>
@@ -53,13 +55,13 @@ new #[Layout('layouts.guest')] class extends Component
         </x-input-group>
 
         <x-input-group
-            label="Password"
+            label="Contraseña"
             id="password"
             type="password"
             model="form.password"
             autocomplete="current-password"
             required
-            placeholder="Enter your password"
+            placeholder="Ingresa tu contraseña"
             :error="$errors->get('form.password')"
         >
             <x-slot:icon>
@@ -73,27 +75,40 @@ new #[Layout('layouts.guest')] class extends Component
             <x-checkbox-field
                 id="remember"
                 model="form.remember"
-                label="Remember me"
+                label="Recordarme"
             />
 
             @if (Route::has('password.request'))
                 <a class="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-400/20 rounded" href="{{ route('password.request') }}" wire:navigate>
-                    {{ __('Forgot your password?') }}
+                    {{ __('¿Olvidaste tu contraseña?') }}
                 </a>
             @endif
         </div>
 
         <x-primary-button class="w-full justify-center">
-            {{ __('Sign in') }}
+            {{ __('Iniciar sesión') }}
         </x-primary-button>
     </form>
 
-    <div class="mt-6 text-center">
+    {{-- Divider --}}
+    <div class="relative my-6">
+        <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t border-gray-200 dark:border-gray-700"></div>
+        </div>
+        <div class="relative flex justify-center text-sm">
+            <span class="px-2 bg-white/80 dark:bg-gray-800/60 text-gray-400 dark:text-gray-500">
+                {{ __('o') }}
+            </span>
+        </div>
+    </div>
+
+    {{-- Register link --}}
+    <div class="text-center">
         <p class="text-sm text-gray-500 dark:text-gray-400">
-            {{ __('Don\'t have an account?') }}
-            <a href="{{ route('register') }}" wire:navigate class="font-medium transition-colors duration-150" style="color: var(--color-primary)">
-                {{ __('Register') }}
-            </a>
+            {{ __('¿No tienes una cuenta?') }}
         </p>
+        <a href="{{ route('register') }}" wire:navigate class="mt-2 inline-flex items-center justify-center w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700/50 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-400/20 transition-all duration-150">
+            {{ __('Crear una cuenta') }}
+        </a>
     </div>
 </div>

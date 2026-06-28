@@ -5,6 +5,7 @@
         : null;
     $appName = $userSettings?->app_name ?? $globalSettings?->app_name ?? config('app.name', 'Laravel');
     $primaryColor = $userSettings?->primary_color ?? $globalSettings?->primary_color ?? '#6366f1';
+    $logoPath = $userSettings?->logo_path ?? $globalSettings?->logo_path;
 @endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
@@ -81,6 +82,21 @@
                 100% { width: 0%; margin-left: 100%; }
             }
 
+            /* Page entrance animation */
+            @keyframes page-enter {
+                from {
+                    opacity: 0;
+                    transform: translateY(12px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            .animate-page-enter {
+                animation: page-enter 0.4s ease-out;
+            }
+
             /* Bottom nav fade-in */
             @keyframes fade-in {
                 from { opacity: 0; transform: scale(0.5); }
@@ -132,7 +148,11 @@
                         </svg>
                     </button>
                     <a href="{{ route('dashboard') }}" wire:navigate class="lg:hidden flex items-center gap-2">
-                        <x-application-logo class="h-7 w-7" style="color: var(--color-primary)" />
+                        @if($logoPath)
+                            <img src="{{ asset('storage/' . $logoPath) }}" alt="{{ $appName }}" class="h-7 w-7 rounded-lg object-cover">
+                        @else
+                            <x-application-logo class="h-7 w-7" style="color: var(--color-primary)" />
+                        @endif
                         <span class="font-bold text-base text-gray-800 dark:text-white">{{ $appName }}</span>
                     </a>
                     <div class="flex-1 lg:flex-none"></div>
@@ -140,14 +160,14 @@
                 </div>
 
                 @if (isset($header))
-                    <header class="bg-white dark:bg-gray-800 shadow">
+                    <header class="bg-white dark:bg-gray-800 shadow animate-page-enter">
                         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                             {{ $header }}
                         </div>
                     </header>
                 @endif
 
-                <main class="p-4 sm:p-6 lg:p-8 pb-24 lg:pb-8">
+                <main class="p-4 sm:p-6 lg:p-8 pb-24 lg:pb-8 animate-page-enter">
                     {{ $slot }}
                 </main>
             </div>
