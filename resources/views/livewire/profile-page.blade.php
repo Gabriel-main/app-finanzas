@@ -159,6 +159,8 @@
                             type="text"
                             wire:model="newAccountName"
                             placeholder="{{ __('Nombre de la cuenta') }}"
+                            x-on:keypress="$event.key.match(/[0-9]/) && $event.preventDefault()"
+                            x-on:paste="$event.clipboardData.getData('text').match(/[0-9]/) && $event.preventDefault()"
                             class="w-full px-4 py-2.5 text-sm rounded-lg border-0 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-400 focus:ring-2 transition-all duration-150"
                             style="--tw-ring-color: var(--color-primary)"
                         >
@@ -274,6 +276,8 @@
                             type="text"
                             wire:model="newCategoryName"
                             placeholder="{{ __('Nombre de la categoría') }}"
+                            x-on:keypress="$event.key.match(/[0-9]/) && $event.preventDefault()"
+                            x-on:paste="$event.clipboardData.getData('text').match(/[0-9]/) && $event.preventDefault()"
                             class="w-full px-4 py-2.5 text-sm rounded-lg border-0 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-400 focus:ring-2 transition-all duration-150"
                             style="--tw-ring-color: var(--color-primary)"
                         >

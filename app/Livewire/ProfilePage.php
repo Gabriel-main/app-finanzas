@@ -145,11 +145,12 @@ class ProfilePage extends Component
     public function createAccount(): void
     {
         $this->validate([
-            'newAccountName' => ['required', 'string', 'max:255'],
+            'newAccountName' => ['required', 'string', 'max:255', 'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s\.\-]+$/u'],
             'currencyId' => ['required', 'exists:currencies,id'],
         ], [
             'newAccountName.required' => 'El nombre de la cuenta es obligatorio.',
             'newAccountName.max' => 'El nombre no debe exceder los 255 caracteres.',
+            'newAccountName.regex' => 'El nombre solo puede contener letras, espacios, guiones y puntos.',
             'currencyId.required' => 'La moneda es obligatoria.',
             'currencyId.exists' => 'La moneda seleccionada no existe.',
         ]);
@@ -215,11 +216,12 @@ class ProfilePage extends Component
         $type = $this->categoryTab;
 
         $this->validate([
-            'newCategoryName' => ['required', 'string', 'max:255'],
+            'newCategoryName' => ['required', 'string', 'max:255', 'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s\.\-]+$/u'],
             'newCategoryColor' => ['nullable', 'string', 'max:7'],
         ], [
             'newCategoryName.required' => 'El nombre de la categoría es obligatorio.',
             'newCategoryName.max' => 'El nombre no debe exceder los 255 caracteres.',
+            'newCategoryName.regex' => 'El nombre solo puede contener letras, espacios, guiones y puntos.',
         ]);
 
         $exists = Categories::where('user_id', auth()->id())
