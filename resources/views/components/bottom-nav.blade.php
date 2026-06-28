@@ -9,13 +9,17 @@
         'user' => 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z',
     ];
 
+    $excludedRoutes = ['settings'];
+
     $bottomItems = [];
     foreach ($menu as $item) {
         if (($item['visible'] ?? true) === false) continue;
         if (($item['type'] ?? '') === 'title') continue;
+        if (in_array($item['route'] ?? '', $excludedRoutes)) continue;
         if (isset($item['submenu'])) {
             foreach ($item['submenu'] as $sub) {
                 if (($sub['visible'] ?? true) === false) continue;
+                if (in_array($sub['route'] ?? '', $excludedRoutes)) continue;
                 $bottomItems[] = [
                     'title' => $sub['title'],
                     'route' => $sub['route'],
