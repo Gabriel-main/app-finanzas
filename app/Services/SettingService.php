@@ -20,4 +20,19 @@ class SettingService
     {
         return $this->repository->createOrUpdate($userId, $data);
     }
+
+    public function getGlobalSettings(): ?Setting
+    {
+        return $this->repository->getGlobal();
+    }
+
+    public function updateGlobalSettings(array $data): Setting
+    {
+        return $this->repository->updateGlobal($data);
+    }
+
+    public function getMergedSettings(int $userId): Setting
+    {
+        return $this->repository->getMergedForUser($userId);
+    }
 }

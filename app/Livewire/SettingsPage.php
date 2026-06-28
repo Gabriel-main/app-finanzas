@@ -13,6 +13,8 @@ class SettingsPage extends Component
     public bool $isAdmin = false;
     public string $appName = 'App Finanzas';
     public string $primaryColor = '#6366f1';
+    public string $chartIncomeColor = '#22c55e';
+    public string $chartExpenseColor = '#f43f5e';
     public $logo = null;
     public ?string $currentLogo = null;
 
@@ -21,10 +23,23 @@ class SettingsPage extends Component
         $user = auth()->user();
         $this->isAdmin = $user->isAdmin();
 
-        $settings = app(SettingService::class)->getUserSettings(auth()->id());
-        $this->appName = $settings->app_name;
-        $this->primaryColor = $settings->primary_color;
-        $this->currentLogo = $settings->logo_path;
+        $service = app(SettingService::class);
+
+        if ($this->isAdmin) {
+            $global = $service->getGlobalSettings();
+            if ($global) {
+                $this->appName = $global->app_name;
+                $this->primaryColor = $global->primary_color;
+                $this->currentLogo = $global->logo_path;
+            }
+        } else {
+            $merged = $service->getMergedSettings(auth()->id());
+            $this->primaryColor = $merged->primary_color;
+        }
+
+        $userSettings = $service->getUserSettings(auth()->id());
+        $this->chartIncomeColor = $userSettings->chart_income_color;
+        $this->chartExpenseColor = $userSettings->chart_expense_color;
     }
 
     public function setPrimaryColor(string $color): void
@@ -40,31 +55,40 @@ class SettingsPage extends Component
 
     public function save(): void
     {
+        $service = app(SettingService::class);
+
         if ($this->isAdmin) {
             $this->validate([
                 'appName' => ['required', 'string', 'max:255'],
                 'primaryColor' => ['required', 'string', 'max:7'],
                 'logo' => ['nullable', 'image', 'max:2048'],
+                'chartIncomeColor' => ['required', 'string', 'max:7'],
+                'chartExpenseColor' => ['required', 'string', 'max:7'],
             ]);
+
+            $globalData = [
+                'app_name' => $this->appName,
+                'primary_color' => $this->primaryColor,
+            ];
+
+            if ($this->logo) {
+                $globalData['logo_path'] = $this->logo->store('logos', 'public');
+            }
+
+            $service->updateGlobalSettings($globalData);
         } else {
             $this->validate([
                 'primaryColor' => ['required', 'string', 'max:7'],
+                'chartIncomeColor' => ['required', 'string', 'max:7'],
+                'chartExpenseColor' => ['required', 'string', 'max:7'],
             ]);
         }
 
-        $data = [
+        $service->updateSettings(auth()->id(), [
             'primary_color' => $this->primaryColor,
-        ];
-
-        if ($this->isAdmin) {
-            $data['app_name'] = $this->appName;
-
-            if ($this->logo) {
-                $data['logo_path'] = $this->logo->store('logos', 'public');
-            }
-        }
-
-        app(SettingService::class)->updateSettings(auth()->id(), $data);
+            'chart_income_color' => $this->chartIncomeColor,
+            'chart_expense_color' => $this->chartExpenseColor,
+        ]);
 
         $this->dispatch('show-toast', message: 'Configuración guardada exitosamente.', type: 'success');
         $this->dispatch('settings-updated');
@@ -76,7 +100,7 @@ class SettingsPage extends Component
             return;
         }
 
-        app(SettingService::class)->updateSettings(auth()->id(), [
+        app(SettingService::class)->updateGlobalSettings([
             'logo_path' => null,
         ]);
         $this->currentLogo = null;

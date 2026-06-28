@@ -3,12 +3,13 @@
 @php
     $menu = json_decode(file_get_contents(resource_path('json/verticemenu.json')), true);
 
+    $globalSettings = \App\Models\Setting::whereNull('user_id')->first();
     $userSettings = null;
     if (auth()->check()) {
         $userSettings = \App\Models\Setting::where('user_id', auth()->id())->first();
     }
-    $appName = $userSettings?->app_name ?? config('app.name', 'Laravel');
-    $logoPath = $userSettings?->logo_path;
+    $appName = $userSettings?->app_name ?? $globalSettings?->app_name ?? config('app.name', 'Laravel');
+    $logoPath = $userSettings?->logo_path ?? $globalSettings?->logo_path;
 
     $icons = [
         'dashboard' => '<svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.25 12l8.954-8.955a1.126 1.126 0 011.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/></svg>',

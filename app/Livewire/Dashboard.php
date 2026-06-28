@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Transaction;
+use App\Services\SettingService;
 use Livewire\Component;
 
 class Dashboard extends Component
@@ -16,6 +17,8 @@ class Dashboard extends Component
     public array $categoryDistribution = [];
     public array $recentTransactions = [];
     public array $budgets = [];
+    public string $chartIncomeColor = '#22c55e';
+    public string $chartExpenseColor = '#f43f5e';
 
     protected $listeners = ['transaction-saved' => '$refresh'];
 
@@ -27,6 +30,10 @@ class Dashboard extends Component
     public function loadData(): void
     {
         try {
+            $settings = app(SettingService::class)->getMergedSettings(auth()->id());
+            $this->chartIncomeColor = $settings->chart_income_color;
+            $this->chartExpenseColor = $settings->chart_expense_color;
+
             $accounts = auth()->user()->accounts()->get();
             $accountIds = $accounts->pluck('id');
 

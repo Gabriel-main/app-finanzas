@@ -75,13 +75,13 @@
                 <h4 class="text-lg font-semibold text-gray-900 dark:text-white">
                     {{ __('Ingresos vs Gastos') }}
                 </h4>
-                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-4">
                     <div class="flex items-center gap-1.5">
-                        <span class="w-3 h-3 rounded-full" style="background-color: var(--color-primary)"></span>
+                        <span class="w-3 h-3 rounded-full" style="background-color: {{ $chartIncomeColor }}"></span>
                         <span class="text-xs text-gray-500 dark:text-gray-400">{{ __('Ingresos') }}</span>
                     </div>
                     <div class="flex items-center gap-1.5">
-                        <span class="w-3 h-3 rounded-full bg-rose-500"></span>
+                        <span class="w-3 h-3 rounded-full" style="background-color: {{ $chartExpenseColor }}"></span>
                         <span class="text-xs text-gray-500 dark:text-gray-400">{{ __('Gastos') }}</span>
                     </div>
                 </div>
@@ -96,7 +96,7 @@
                                     y="{{ 220 - ($bar['income'] / $maxChart) * 200 - 10 }}"
                                     width="{{ (600 / count($chartData)) - 6 }}"
                                     height="{{ ($bar['income'] / $maxChart) * 200 }}"
-                                    fill="var(--color-primary)"
+                                    fill="{{ $chartIncomeColor }}"
                                     opacity="0.85"
                                     rx="4"
                                 />
@@ -105,7 +105,7 @@
                                     y="{{ 220 - ($bar['expense'] / $maxChart) * 200 - 10 }}"
                                     width="{{ (600 / count($chartData)) - 6 }}"
                                     height="{{ ($bar['expense'] / $maxChart) * 200 }}"
-                                    fill="#f43f5e"
+                                    fill="{{ $chartExpenseColor }}"
                                     opacity="0.85"
                                     rx="4"
                                 />

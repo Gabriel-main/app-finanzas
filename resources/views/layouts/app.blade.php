@@ -1,9 +1,10 @@
 @php
+    $globalSettings = \App\Models\Setting::whereNull('user_id')->first();
     $userSettings = auth()->check()
         ? \App\Models\Setting::where('user_id', auth()->id())->first()
         : null;
-    $appName = $userSettings?->app_name ?? config('app.name', 'Laravel');
-    $primaryColor = $userSettings?->primary_color ?? '#6366f1';
+    $appName = $userSettings?->app_name ?? $globalSettings?->app_name ?? config('app.name', 'Laravel');
+    $primaryColor = $userSettings?->primary_color ?? $globalSettings?->primary_color ?? '#6366f1';
 @endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
