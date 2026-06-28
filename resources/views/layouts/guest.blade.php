@@ -10,6 +10,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
+        <meta name="description" content="Inicia sesión en {{ $appName }} para gestionar tus finanzas de forma inteligente.">
 
         <title>{{ $appName }}</title>
 
@@ -26,6 +27,12 @@
                 --color-primary-rgb: {{ implode(',', sscanf($primaryColor, '#%02x%02x%02x')) }};
                 --color-primary-light: {{ $primaryColor }}15;
             }
+            .guest-bg {
+                background: linear-gradient(to bottom right, {{ $primaryColor }}08, white, {{ $primaryColor }}05);
+            }
+            .dark .guest-bg {
+                background: #030712;
+            }
         </style>
 
         <script>
@@ -35,12 +42,12 @@
         </script>
     </head>
     <body class="font-sans text-gray-900 antialiased">
-        <div class="relative min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-gray-950 dark:via-gray-900 dark:to-indigo-950 flex flex-col justify-center items-center px-4 py-8 overflow-hidden">
+        <div class="relative min-h-screen flex flex-col justify-center items-center px-4 py-8 overflow-hidden guest-bg">
 
             {{-- Decorative background shapes --}}
-            <div class="absolute top-0 left-0 w-72 h-72 bg-indigo-300/20 dark:bg-indigo-500/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
-            <div class="absolute bottom-0 right-0 w-96 h-96 bg-purple-300/20 dark:bg-purple-500/10 rounded-full blur-3xl translate-x-1/3 translate-y-1/3 pointer-events-none"></div>
-            <div class="absolute top-1/2 left-1/2 w-64 h-64 bg-indigo-200/10 dark:bg-indigo-400/5 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
+            <div class="absolute top-0 left-0 w-72 h-72 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 pointer-events-none" style="background-color: {{ $primaryColor }}20"></div>
+            <div class="absolute bottom-0 right-0 w-96 h-96 rounded-full blur-3xl translate-x-1/3 translate-y-1/3 pointer-events-none" style="background-color: {{ $primaryColor }}15"></div>
+            <div class="absolute top-1/2 left-1/2 w-64 h-64 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 pointer-events-none" style="background-color: {{ $primaryColor }}10"></div>
 
             {{-- Top navigation --}}
             <div class="absolute top-4 left-4 z-10">

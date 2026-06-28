@@ -140,7 +140,7 @@ new #[Layout('layouts.guest')] class extends Component
         <p class="text-sm text-gray-500 dark:text-gray-400">
             {{ __('¿Ya tienes una cuenta?') }}
         </p>
-        <a href="{{ route('login') }}" wire:navigate class="mt-2 inline-flex items-center justify-center w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700/50 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-400/20 transition-all duration-150">
+        <a href="{{ route('login') }}" wire:navigate class="mt-2 inline-flex items-center justify-center w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700/50 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 transition-all duration-150" style="--tw-ring-color: var(--color-primary); --tw-ring-opacity: 0.2;">
             {{ __('Iniciar sesión') }}
         </a>
     </div>
