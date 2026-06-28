@@ -75,54 +75,31 @@
                 <h4 class="text-lg font-semibold text-gray-900 dark:text-white">
                     {{ __('Ingresos vs Gastos') }}
                 </h4>
-                    <div class="flex items-center gap-4">
-                    <div class="flex items-center gap-1.5">
-                        <span class="w-3 h-3 rounded-full" style="background-color: {{ $chartIncomeColor }}"></span>
-                        <span class="text-xs text-gray-500 dark:text-gray-400">{{ __('Ingresos') }}</span>
-                    </div>
-                    <div class="flex items-center gap-1.5">
-                        <span class="w-3 h-3 rounded-full" style="background-color: {{ $chartExpenseColor }}"></span>
-                        <span class="text-xs text-gray-500 dark:text-gray-400">{{ __('Gastos') }}</span>
-                    </div>
-                </div>
             </div>
-            <div class="relative" style="height: 220px;">
-                @if($maxChart > 0)
-                    <svg class="w-full h-full" viewBox="0 0 600 220" preserveAspectRatio="none">
-                        @foreach($chartData as $i => $bar)
-                            <g>
-                                <rect
-                                    x="{{ ($i * (600 / count($chartData))) + 3 }}"
-                                    y="{{ 220 - ($bar['income'] / $maxChart) * 200 - 10 }}"
-                                    width="{{ (600 / count($chartData)) - 6 }}"
-                                    height="{{ ($bar['income'] / $maxChart) * 200 }}"
-                                    fill="{{ $chartIncomeColor }}"
-                                    opacity="0.85"
-                                    rx="4"
-                                />
-                                <rect
-                                    x="{{ ($i * (600 / count($chartData))) + 3 }}"
-                                    y="{{ 220 - ($bar['expense'] / $maxChart) * 200 - 10 }}"
-                                    width="{{ (600 / count($chartData)) - 6 }}"
-                                    height="{{ ($bar['expense'] / $maxChart) * 200 }}"
-                                    fill="{{ $chartExpenseColor }}"
-                                    opacity="0.85"
-                                    rx="4"
-                                />
-                            </g>
-                        @endforeach
-                    </svg>
-                @else
-                    <div class="flex items-center justify-center h-full text-gray-400 dark:text-gray-500 text-sm">
-                        {{ __('Sin datos para mostrar') }}
-                    </div>
-                @endif
-                <div class="absolute inset-x-0 bottom-0 flex justify-between text-xs text-gray-400 dark:text-gray-500 pt-2">
-                    @foreach($chartData as $bar)
-                        <span>{{ $bar['month'] }}</span>
-                    @endforeach
+            @if(count($chartData) > 0)
+                <div
+                    x-data
+                    x-init="
+                        $nextTick(() => {
+                            window.initBarChart('#chart-bar', {
+                                income: @js(collect($chartData)->pluck('income')->toArray()),
+                                expense: @js(collect($chartData)->pluck('expense')->toArray()),
+                                months: @js(collect($chartData)->pluck('month')->toArray()),
+                                colors: { income: '{{ $chartIncomeColor }}', expense: '{{ $chartExpenseColor }}' },
+                                labels: { income: '{{ __("Ingresos") }}', expense: '{{ __("Gastos") }}' },
+                                noData: '{{ __("Sin datos para mostrar") }}'
+                            })
+                        })
+                    "
+                    wire:ignore
+                >
+                    <div id="chart-bar"></div>
                 </div>
-            </div>
+            @else
+                <div class="flex items-center justify-center h-[220px] text-gray-400 dark:text-gray-500 text-sm">
+                    {{ __('Sin datos para mostrar') }}
+                </div>
+            @endif
         </div>
 
         {{-- Expense Distribution --}}
@@ -131,24 +108,25 @@
                 {{ __('Distribución de Gastos') }}
             </h4>
             @if(count($categoryDistribution) > 0)
-                <div class="space-y-4">
-                    @foreach($categoryDistribution as $cat)
-                        <div>
-                            <div class="flex items-center justify-between text-sm mb-1.5">
-                                <div class="flex items-center gap-2">
-                                    <span class="w-2.5 h-2.5 rounded-full" style="background-color: {{ $cat['color'] }}"></span>
-                                    <span class="text-gray-700 dark:text-gray-300">{{ $cat['name'] }}</span>
-                                </div>
-                                <span class="text-gray-500 dark:text-gray-400 font-medium">{{ $cat['percentage'] }}%</span>
-                            </div>
-                            <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2">
-                                <div class="h-2 rounded-full transition-all duration-500" style="width: {{ $cat['percentage'] }}%; background-color: {{ $cat['color'] }}"></div>
-                            </div>
-                        </div>
-                    @endforeach
+                <div
+                    x-data
+                    x-init="
+                        $nextTick(() => {
+                            window.initDonutChart('#chart-donut', {
+                                series: @js(collect($categoryDistribution)->pluck('percentage')->toArray()),
+                                colors: @js(collect($categoryDistribution)->pluck('color')->toArray()),
+                                labels: @js(collect($categoryDistribution)->pluck('name')->toArray()),
+                                totalLabel: '{{ __("Total") }}',
+                                noData: '{{ __("Sin gastos este mes") }}'
+                            })
+                        })
+                    "
+                    wire:ignore
+                >
+                    <div id="chart-donut"></div>
                 </div>
             @else
-                <div class="flex items-center justify-center h-32 text-gray-400 dark:text-gray-500 text-sm">
+                <div class="flex items-center justify-center h-[280px] text-gray-400 dark:text-gray-500 text-sm">
                     {{ __('Sin gastos este mes') }}
                 </div>
             @endif

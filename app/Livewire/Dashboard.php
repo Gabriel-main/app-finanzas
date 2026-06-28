@@ -13,7 +13,6 @@ class Dashboard extends Component
     public float $monthlyExpenses = 0;
     public float $savingsRate = 0;
     public array $chartData = [];
-    public float $maxChart = 0;
     public array $categoryDistribution = [];
     public array $recentTransactions = [];
     public array $budgets = [];
@@ -56,7 +55,6 @@ class Dashboard extends Component
                 : 0;
 
             $this->chartData = $this->buildChartData($accountIds);
-            $this->maxChart = (float) collect($this->chartData)->flatMap(fn ($d) => [$d['income'], $d['expense']])->max();
             $this->categoryDistribution = $this->buildCategoryDistribution($accountIds);
             $this->recentTransactions = $this->buildRecentTransactions($accountIds);
             $this->budgets = $this->buildBudgets($accountIds);

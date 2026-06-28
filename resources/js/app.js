@@ -1,4 +1,8 @@
 import './animacion.js'
+import { initBarChart, initDonutChart, onLivewireUpdate } from './dashboard-charts.js'
+
+window.initBarChart = initBarChart
+window.initDonutChart = initDonutChart
 
 function qs(sel) {
     return document.querySelector(sel)
@@ -49,6 +53,7 @@ document.addEventListener('DOMContentLoaded', function () {
 document.addEventListener('livewire:navigated', function () {
     restoreSidebar()
     restoreTheme()
+    onLivewireUpdate()
 })
 
 window.addEventListener('resize', function () {
