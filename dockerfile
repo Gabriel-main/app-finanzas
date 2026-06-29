@@ -29,7 +29,7 @@ WORKDIR /var/www
 COPY . /var/www
 
 # 1. Instalar dependencias de PHP
-RUN composer install --no-dev --optimize-autoloader
+RUN composer install --optimize-autoloader
 
 # 2. Instalar dependencias de Node.js y COMPILAR ASSETS (Vital para Tailwind/Alpine)
 RUN npm install && npm run build
