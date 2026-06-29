@@ -34,6 +34,9 @@ RUN composer install --optimize-autoloader
 # 2. Instalar dependencias de Node.js y COMPILAR ASSETS (Vital para Tailwind/Alpine)
 RUN npm install && npm run build
 
+# ESTO ES LO MÁS IMPORTANTE: Asegura que el build sea persistente y visible
+RUN ls -la /var/www/public/build
+
 # Copia los assets compilados desde la etapa de build
 RUN chmod -R 755 /var/www/public/build
 # 3. Corregido: Ajuste de permisos (usando www-data directamente)
@@ -48,5 +51,8 @@ RUN php artisan migrate --force && php artisan db:seed --force
 
 # Exponer puerto de PHP-FPM
 EXPOSE 9000
+
+# Elimina cualquier rastro de modo desarrollo
+RUN rm -f /var/www/public/hot
 #CMD ["php-fpm"]
-CMD sh -c "php -S 0.0.0.0:$PORT -t public"
+CMD sh -c "php -S 0.0.0.0:$PORT -t /var/www/public"
