@@ -41,7 +41,8 @@ RUN chown -R www-data:www-data /var/www \
 
 # 4. Ejecutar migraciones (para crear el archivo sqlite si no existe)
 # Nota: Asegúrate de tener un .env de producción configurado en Render
-RUN php artisan migrate --force
+# 4. Ejecutar migraciones y seeders
+RUN php artisan migrate --force && php artisan db:seed --force
 
 # Exponer puerto de PHP-FPM
 EXPOSE 9000
