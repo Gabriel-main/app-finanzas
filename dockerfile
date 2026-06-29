@@ -35,7 +35,7 @@ RUN composer install --optimize-autoloader
 RUN npm install && npm run build
 
 # Copia los assets compilados desde la etapa de build
-
+RUN chmod -R 755 /var/www/public/build
 # 3. Corregido: Ajuste de permisos (usando www-data directamente)
 RUN chown -R www-data:www-data /var/www \
     && chmod -R 775 /var/www/storage \
