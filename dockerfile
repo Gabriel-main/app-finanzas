@@ -28,10 +28,20 @@ WORKDIR /var/www
 # Copiar archivos del proyecto
 COPY . /var/www
 
-# Ajuste de permisos para Laravel (Aseguramos que storage y bootstrap/cache tengan acceso total)
-RUN chown -R $user:www-data /var/www \
+# 1. Instalar dependencias de PHP
+RUN composer install --no-dev --optimize-autoloader
+
+# 2. Instalar dependencias de Node.js y COMPILAR ASSETS (Vital para Tailwind/Alpine)
+RUN npm install && npm run build
+
+# 3. Corregido: Ajuste de permisos (usando www-data directamente)
+RUN chown -R www-data:www-data /var/www \
     && chmod -R 775 /var/www/storage \
     && chmod -R 775 /var/www/bootstrap/cache
+
+# 4. Ejecutar migraciones (para crear el archivo sqlite si no existe)
+# Nota: Asegúrate de tener un .env de producción configurado en Render
+RUN php artisan migrate --force
 
 # Exponer puerto de PHP-FPM
 EXPOSE 9000
