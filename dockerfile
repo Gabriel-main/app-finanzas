@@ -35,5 +35,5 @@ RUN chown -R $user:www-data /var/www \
 
 # Exponer puerto de PHP-FPM
 EXPOSE 9000
-
-CMD ["php-fpm"]
+#CMD ["php-fpm"]
+CMD sh -c "php -S 0.0.0.0:$PORT -t public"
